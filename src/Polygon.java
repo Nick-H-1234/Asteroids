@@ -16,10 +16,19 @@ import java.awt.*;
 
 class Polygon extends Shape {
     private Point[] shape;   // An array of points.
+    protected double scale = 2;
 
-    public Polygon(Point[] shape, Point position, double rotation) {
+    /**
+     * Creates a polygon based at position, where the shape is defined in shape, as displacements from position.
+     * @param shape displacements from position which defines the shape in x, y coordinates
+     * @param position the reference point of the shape in x, y coordinates
+     * @param rotation the rotation of the shape in degrees
+     * @param scale the scale of the shape
+     */
+    public Polygon(Point[] shape, Point position, double rotation, double scale) {
         super(position, rotation);
         this.shape = shape;
+        this.scale = scale;
 
         // First, we find the shape's top-most left-most boundary, its origin.
         Point origin = null;
@@ -46,11 +55,11 @@ class Polygon extends Shape {
         Point[] points = new Point[shape.length];
         for (int i = 0; i < shape.length; i++) {
             Point p = shape[i];
-            int x = (int) (((p.x - center.x) * Math.cos(Math.toRadians(rotation)))
-                    - ((p.y - center.y) * Math.sin(Math.toRadians(rotation)))
+            int x = (int) ((((p.x - center.x) * Math.cos(Math.toRadians(rotation))
+                    - (p.y - center.y) * Math.sin(Math.toRadians(rotation))) * scale)
                     + center.x + position.x);
-            int y = (int) (((p.x - center.x) * Math.sin(Math.toRadians(rotation)))
-                    + ((p.y - center.y) * Math.cos(Math.toRadians(rotation)))
+            int y = (int) ((((p.x - center.x) * Math.sin(Math.toRadians(rotation))
+                    + (p.y - center.y) * Math.cos(Math.toRadians(rotation))) * scale)
                     + center.y + position.y);
             points[i] = new Point(x, y);
         }
@@ -91,9 +100,11 @@ class Polygon extends Shape {
             // Make a polygon that approximates the circle
             Point[] approximationPoints = new Point[8];
             for (int i = 0; i < 8;i++) {
-                approximationPoints[i] = makePointOnCircle(circle.getPosition(), i*45, circle.getRadius());
+                approximationPoints[i] = makePointOnCircle(circle.findCenter(), i*45, circle.getRadius());
             }
-            Polygon approximation = new Polygon(approximationPoints,new Point(0,0),0);
+            Point circleCenter = circle.findCenter();
+            Point polygonPosition = new Point(circleCenter.x-circle.getRadius(),circleCenter.y-circle.getRadius());
+            Polygon approximation = new Polygon(approximationPoints, polygonPosition,0, 1);
             return collidesWith(approximation);
         }
         return false;

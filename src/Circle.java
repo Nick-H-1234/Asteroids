@@ -3,6 +3,13 @@ import java.awt.*;
 public class Circle extends Shape {
     private int radius;
 
+    /**
+     * Creates a circle centered on position, with radius radius.
+     * @param position the centre of the circle.
+     * @param radius the radius of the circle.
+     * @param rotation the rotation of the circle.
+     *
+     */
     public Circle(Point position, int radius, double rotation) {
         super(position, rotation);
         this.radius = radius;
@@ -49,7 +56,7 @@ public class Circle extends Shape {
         brush.setColor(color);
         int x = this.position.x;
         int y = this.position.y;
-        brush.fillOval(x,y,radius*2,radius*2);
+        brush.fillOval(x-radius,y-radius,radius*2,radius*2);
     }
 
 

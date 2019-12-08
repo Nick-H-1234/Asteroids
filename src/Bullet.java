@@ -3,7 +3,7 @@ import java.awt.*;
 public class Bullet extends Circle {
 
     public Bullet(Point position, double rotation) {
-        super(position, 2, rotation);
+        super(position, 10, rotation);
         speed = 6;
         color = Color.red;
     }

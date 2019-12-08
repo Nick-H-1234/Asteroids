@@ -61,7 +61,6 @@ public abstract class Shape {
         position.x += (speed * Math.cos(Math.toRadians(rotation)));
         position.y += (speed * Math.sin(Math.toRadians(rotation)));
 
-        Point centre = findCenter();
         if (position.x > width) {
             position.x = 0;
         } else if (position.x < 0) {

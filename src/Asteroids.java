@@ -21,7 +21,7 @@ class Asteroids extends Game implements KeyListener {
 
     public Asteroids() {
         super("Asteroids!", 800, 600);
-        spawnBox = new Polygon(new Point[]{new Point(0, 0), new Point(width / 3, 0), new Point(width / 3, height / 3), new Point(0, height / 3)}, new Point(width / 3, height / 3), 0);
+        spawnBox = new Polygon(new Point[]{new Point(0, 0), new Point(width / 3, 0), new Point(width / 3, height / 3), new Point(0, height / 3)}, new Point(width / 3, height / 3), 0, 1);
         spawnBox.color = Color.green;
         frame.addKeyListener(this);
         ship = new Ship(new Point(width / 2, height / 2), -90);
@@ -48,7 +48,7 @@ class Asteroids extends Game implements KeyListener {
         int asteroidsNumber = (level * 2) + 2;
         for (int i = 0; i < asteroidsNumber; i++) {
 
-            Asteroid asteroid = new Asteroid(generateShape(), generateLocation(), generateRotation());
+            Asteroid asteroid = new Asteroid(generateShape(), generateLocation(), generateRotation(), 1);
             if (asteroid.collidesWith(spawnBox)) {
                 i--;
             } else {
@@ -81,15 +81,14 @@ class Asteroids extends Game implements KeyListener {
             for (Iterator<Bullet> bulletIterator = bulletList.iterator(); bulletIterator.hasNext();) {
                 Bullet bullet = bulletIterator.next();
                 if (!bullet.move(width, height)) {
-                    System.out.println("removing bullet!");
                     bulletIterator.remove();
                     continue;
                 }
                 bullet.paint(brush);
+                System.out.println("x: " + bullet.position.x + " y: " + bullet.position.y);
                 for (Iterator<Asteroid> asteroidIterator = asteroidList.iterator(); asteroidIterator.hasNext();) {
                     Asteroid asteroid = asteroidIterator.next();
                     if (asteroid.collidesWith(bullet)) {
-                        System.out.println("removing bullet & asteroid!");
                         asteroidIterator.remove();
                         bulletIterator.remove();
                         continue;
@@ -131,6 +130,7 @@ class Asteroids extends Game implements KeyListener {
         double rotation = ship.getRotation();
         Point position = ship.getTransformedPoints()[2];
         Bullet bullet = new Bullet(position, rotation);
+        System.out.println("making bullet at position " + position + ", rotation " + rotation);
         bulletList.add(bullet);
     }
 

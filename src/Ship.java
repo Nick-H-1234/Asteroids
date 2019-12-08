@@ -3,7 +3,7 @@ public class Ship extends Polygon {
     public static final Point[] SHIP_SHAPE = {new Point(0, 0), new Point(0, 40), new Point(60, 20)};
 
     public Ship(Point position, double rotation) {
-        super(SHIP_SHAPE, position, rotation);
+        super(SHIP_SHAPE, position, rotation, 1);
         xPos = position.x;
         yPos = position.y;
     }
@@ -101,7 +101,6 @@ public class Ship extends Polygon {
         position.x = (int) xPos;
         position.y = (int) yPos;
 
-        Point centre = findCenter();
         if (position.x > width) {
             xPos = 0;
             position.x = 0;
