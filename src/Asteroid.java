@@ -6,6 +6,6 @@ public class Asteroid extends Polygon {
 
     public Asteroid(Point[] shape, Point position, double rotation, double scale) {
         super (shape, position, rotation, scale);
-        speed = 1;
+        setSpeed(1);
     }
 }

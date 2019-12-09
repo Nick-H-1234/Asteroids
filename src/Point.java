@@ -5,8 +5,12 @@ DESCRIPTION: Ah, if only real-life classes were this straight-forward. We'll
              coordinates.
 */
 
+/**
+ * Represents an immutable point on the x,y plane.
+ */
 class Point implements Cloneable {
-    int x, y;
+    private int x;
+    private int y;
 
     public Point(int x, int y) {
         this.x = x;
@@ -27,7 +31,7 @@ class Point implements Cloneable {
             return false;
         }
         Point otherPoint = (Point) other;
-        return otherPoint.x == this.x && otherPoint.y == this.y;
+        return otherPoint.getX() == this.getX() && otherPoint.getY() == this.getY();
     }
 
     @Override
@@ -36,6 +40,15 @@ class Point implements Cloneable {
     }
 
     public String toString() {
-        return "x: " + x + " y: " + y;
+        return "x: " + getX() + " y: " + getY();
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
 }

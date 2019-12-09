@@ -20,6 +20,7 @@ class Polygon extends Shape {
 
     /**
      * Creates a polygon based at position, where the shape is defined in shape, as displacements from position.
+     * shape is pre-processed to be as close as possible to the origin.
      * @param shape displacements from position which defines the shape in x, y coordinates
      * @param position the reference point of the shape in x, y coordinates
      * @param rotation the rotation of the shape in degrees
@@ -31,22 +32,22 @@ class Polygon extends Shape {
         this.scale = scale;
 
         // First, we find the shape's top-most left-most boundary, its origin.
-        Point origin = null;
-        try {
-            origin = (Point) this.shape[0].clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+        int minx = this.shape[0].getX();
+        int miny = this.shape[0].getY();
         for (Point p : this.shape) {
-            if (p.x < origin.x) origin.x = p.x;
-            if (p.y < origin.y) origin.y = p.y;
+            minx = Math.min(minx, p.getX());
+            miny = Math.min(miny, p.getY());
         }
 
         // Then, we orient all of its points relative to the real origin.
-        for (Point p : this.shape) {
-            p.x -= origin.x;
-            p.y -= origin.y;
+        for (int i = 0; i < this.shape.length; i++) {
+            Point point = new Point(this.shape[i].getX()-minx, this.shape[i].getY()-miny);
+            this.shape[i] = point;
         }
+    }
+
+    public Point[] getShape() {
+        return shape;
     }
 
     // "getPoints" applies the rotation and offset to the shape of the polygon.
@@ -55,12 +56,12 @@ class Polygon extends Shape {
         Point[] points = new Point[shape.length];
         for (int i = 0; i < shape.length; i++) {
             Point p = shape[i];
-            int x = (int) ((((p.x - center.x) * Math.cos(Math.toRadians(rotation))
-                    - (p.y - center.y) * Math.sin(Math.toRadians(rotation))) * scale)
-                    + center.x + position.x);
-            int y = (int) ((((p.x - center.x) * Math.sin(Math.toRadians(rotation))
-                    + (p.y - center.y) * Math.cos(Math.toRadians(rotation))) * scale)
-                    + center.y + position.y);
+            int x = (int) ((((p.getX() - center.getX()) * Math.cos(Math.toRadians(rotation))
+                    - (p.getY() - center.getY()) * Math.sin(Math.toRadians(rotation))) * scale)
+                    + center.getX() + position.getX());
+            int y = (int) ((((p.getX() - center.getX()) * Math.sin(Math.toRadians(rotation))
+                    + (p.getY() - center.getY()) * Math.cos(Math.toRadians(rotation))) * scale)
+                    + center.getY() + position.getY());
             points[i] = new Point(x, y);
         }
         return points;
@@ -68,9 +69,9 @@ class Polygon extends Shape {
 
     public Point makePointOnCircle(Point position, double angle, int radius) {
         int x = (int) (radius * Math.cos(Math.toRadians(angle))
-                + position.x);
+                + position.getX());
         int y = (int) (radius * Math.sin(Math.toRadians(angle))
-                 + position.y);
+                 + position.getY());
         Point point = new Point (x,y);
         return point;
     }
@@ -103,7 +104,7 @@ class Polygon extends Shape {
                 approximationPoints[i] = makePointOnCircle(circle.findCenter(), i*45, circle.getRadius());
             }
             Point circleCenter = circle.findCenter();
-            Point polygonPosition = new Point(circleCenter.x-circle.getRadius(),circleCenter.y-circle.getRadius());
+            Point polygonPosition = new Point(circleCenter.getX() -circle.getRadius(), circleCenter.getY() -circle.getRadius());
             Polygon approximation = new Polygon(approximationPoints, polygonPosition,0, 1);
             return collidesWith(approximation);
         }
@@ -116,10 +117,10 @@ class Polygon extends Shape {
         Point[] points = getTransformedPoints();
         double crossingNumber = 0;
         for (int i = 0, j = 1; i < shape.length; i++, j = (j + 1) % shape.length) {
-            if ((((points[i].x < point.x) && (point.x <= points[j].x)) ||
-                    ((points[j].x < point.x) && (point.x <= points[i].x))) &&
-                    (point.y > points[i].y + (points[j].y - points[i].y) /
-                            (points[j].x - points[i].x) * (point.x - points[i].x))) {
+            if ((((points[i].getX() < point.getX()) && (point.getX() <= points[j].getX())) ||
+                    ((points[j].getX() < point.getX()) && (point.getX() <= points[i].getX()))) &&
+                    (point.getY() > points[i].getY() + (points[j].getY() - points[i].getY()) /
+                            (points[j].getX() - points[i].getX()) * (point.getX() - points[i].getX()))) {
                 crossingNumber++;
             }
         }
@@ -140,7 +141,7 @@ class Polygon extends Shape {
     private double findArea() {
         double sum = 0;
         for (int i = 0, j = 1; i < shape.length; i++, j = (j + 1) % shape.length) {
-            sum += shape[i].x * shape[j].y - shape[j].x * shape[i].y;
+            sum += shape[i].getX() * shape[j].getY() - shape[j].getX() * shape[i].getY();
         }
         return Math.abs(sum / 2);
     }
@@ -150,15 +151,15 @@ class Polygon extends Shape {
 
     @Override
     protected Point findCenter() {
-        Point sum = new Point(0, 0);
+        int x = 0 , y = 0;
         for (int i = 0, j = 1; i < shape.length; i++, j = (j + 1) % shape.length) {
-            sum.x += (shape[i].x + shape[j].x)
-                    * (shape[i].x * shape[j].y - shape[j].x * shape[i].y);
-            sum.y += (shape[i].y + shape[j].y)
-                    * (shape[i].x * shape[j].y - shape[j].x * shape[i].y);
+            x += (shape[i].getX() + shape[j].getX())
+                    * (shape[i].getX() * shape[j].getY() - shape[j].getX() * shape[i].getY());
+            y += (shape[i].getY() + shape[j].getY())
+                    * (shape[i].getX() * shape[j].getY() - shape[j].getX() * shape[i].getY());
         }
         double area = findArea();
-        return new Point((int) Math.abs(sum.x / (6 * area)), (int) Math.abs(sum.y / (6 * area)));
+        return new Point((int) Math.abs(x / (6 * area)), (int) Math.abs(y / (6 * area)));
     }
 
     @Override
@@ -168,10 +169,13 @@ class Polygon extends Shape {
         int[] xValues = new int[transformedPoints.length];
         int[] yValues = new int[transformedPoints.length];
         for (int i = 0; i < transformedPoints.length; i++) {
-            xValues[i] = transformedPoints[i].x;
-            yValues[i] = transformedPoints[i].y;
+            xValues[i] = transformedPoints[i].getX();
+            yValues[i] = transformedPoints[i].getY();
         }
         brush.drawPolygon(xValues, yValues, transformedPoints.length);
     }
 
+    public double getScale() {
+        return scale;
+    }
 }

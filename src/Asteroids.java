@@ -9,10 +9,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 class Asteroids extends Game implements KeyListener {
-    java.util.List<Asteroid> asteroidList = new ArrayList<>();
-    java.util.List<Bullet> bulletList = new ArrayList<>();
+    List<Asteroid> asteroidList = new ArrayList<>();
+    List<Bullet> bulletList = new ArrayList<>();
     Ship ship;
     boolean gameOver = false;
     Polygon spawnBox;
@@ -25,7 +26,6 @@ class Asteroids extends Game implements KeyListener {
         spawnBox.color = Color.green;
         frame.addKeyListener(this);
         ship = new Ship(new Point(width / 2, height / 2), -90);
-        //gameThings.add(ship);
         generateAsteroidsForLevel(level);
         new Thread(new Runnable() {
             public void run() {
@@ -48,7 +48,7 @@ class Asteroids extends Game implements KeyListener {
         int asteroidsNumber = (level * 2) + 2;
         for (int i = 0; i < asteroidsNumber; i++) {
 
-            Asteroid asteroid = new Asteroid(generateShape(), generateLocation(), generateRotation(), 1);
+            Asteroid asteroid = new Asteroid(generateShape(), generateLocation(), generateRotation(), 2);
             if (asteroid.collidesWith(spawnBox)) {
                 i--;
             } else {
@@ -85,15 +85,21 @@ class Asteroids extends Game implements KeyListener {
                     continue;
                 }
                 bullet.paint(brush);
-                System.out.println("x: " + bullet.position.x + " y: " + bullet.position.y);
+                List<Asteroid> newAsteroidsList = new ArrayList<>(); //todo optimise
                 for (Iterator<Asteroid> asteroidIterator = asteroidList.iterator(); asteroidIterator.hasNext();) {
                     Asteroid asteroid = asteroidIterator.next();
                     if (asteroid.collidesWith(bullet)) {
+                        if (asteroid.scale > 1) {
+                            Point point = asteroid.getPosition();
+                            newAsteroidsList.add(new Asteroid(asteroid.getShape(),point,180,asteroid.getScale()/2));
+                            newAsteroidsList.add(new Asteroid(asteroid.getShape(),point,0,asteroid.getScale()/2));
+                        }
                         asteroidIterator.remove();
                         bulletIterator.remove();
-                        continue;
+                        break;
                     }
                 }
+                asteroidList.addAll(newAsteroidsList);
             }
 
 
@@ -158,8 +164,8 @@ class Asteroids extends Game implements KeyListener {
             ship.setXSpeed(0);
             ship.setYSpeed(0);
             ship.setPosition(new Point(width / 2, height / 2));
-            ship.setYPos(ship.position.y);
-            ship.setXPos(ship.position.x);
+            ship.setYPos(ship.position.getY());
+            ship.setXPos(ship.position.getX());
             ship.setRotation(-90);
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             System.exit(0);

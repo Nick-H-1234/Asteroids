@@ -9,13 +9,13 @@ public class Bullet extends Circle {
     }
 
     public boolean move(int width, int height) {
-        position.x += (speed * Math.cos(Math.toRadians(rotation)));
-        position.y += (speed * Math.sin(Math.toRadians(rotation)));
+        Point newPosition = new Point((int) (position.getX() + (speed * Math.cos(Math.toRadians(rotation)))), (int) (position.getY() + (speed * Math.sin(Math.toRadians(rotation)))));
+        setPosition(newPosition);
 
-        if (position.x < -10 || position.x > width+10) {
+        if (position.getX() < -10 || position.getX() > width+10) {
             return false;
         }
-        if (position.y < -10 || position.y > height+10) {
+        if (position.getY() < -10 || position.getY() > height+10) {
             return false;
         }
         return true;

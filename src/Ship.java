@@ -4,8 +4,8 @@ public class Ship extends Polygon {
 
     public Ship(Point position, double rotation) {
         super(SHIP_SHAPE, position, rotation, 1);
-        xPos = position.x;
-        yPos = position.y;
+        xPos = position.getX();
+        yPos = position.getY();
     }
 
     boolean engineOn = false;
@@ -98,25 +98,20 @@ public class Ship extends Polygon {
         }
         xPos += xSpeed;
         yPos += ySpeed;
-        position.x = (int) xPos;
-        position.y = (int) yPos;
 
-        if (position.x > width) {
+        if (xPos > width) {
             xPos = 0;
-            position.x = 0;
-        } else if (position.x < 0) {
+        } else if (xPos < 0) {
             xPos = width;
-            position.x = width;
         }
-        if (position.y > height) {
+        if (yPos > height) {
             yPos = 0;
-            position.y = 0;
-        } else if (position.y < 0) {
+        } else if (yPos < 0) {
             yPos = height;
-            position.y = height;
         }
 
-
+        Point newPosition = new Point((int) xPos, (int) yPos);
+        setPosition(newPosition);
         return true;
     }
 

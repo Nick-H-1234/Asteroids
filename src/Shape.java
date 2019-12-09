@@ -34,8 +34,8 @@ public abstract class Shape {
     public abstract boolean collidesWith(Shape other);
 
     protected double distanceBetween(Point n, Point m) {
-        double a = n.x - m.x;
-        double b = n.y - m.y;
+        double a = n.getX() - m.getX();
+        double b = n.getY() - m.getY();
         double c = Math.sqrt((Math.pow(a,2))+(Math.pow(b,2)));
         return c;
     }
@@ -58,19 +58,22 @@ public abstract class Shape {
      * @return true if the shape is still active after the move.
      */
     public boolean move(int width, int height) {
-        position.x += (speed * Math.cos(Math.toRadians(rotation)));
-        position.y += (speed * Math.sin(Math.toRadians(rotation)));
+        double x = position.getX() + (speed * Math.cos(Math.toRadians(rotation)));
+        double y = position.getY() + (speed * Math.sin(Math.toRadians(rotation)));
 
-        if (position.x > width) {
-            position.x = 0;
-        } else if (position.x < 0) {
-            position.x = width;
+        if (x > width) {
+            x = 0;
+        } else if (x < 0) {
+            x = width;
         }
-        if (position.y > height) {
-            position.y = 0;
-        } else if (position.y < 0) {
-            position.y = height;
+        if (y > height) {
+            y = 0;
+        } else if (y < 0) {
+            y = height;
         }
+
+        Point newPosition = new Point((int) x, (int) y);
+        setPosition(newPosition);
         return true;
     }
 
