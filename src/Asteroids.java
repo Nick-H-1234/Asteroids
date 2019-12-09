@@ -78,6 +78,7 @@ class Asteroids extends Game implements KeyListener {
             brush.fillRect(0, 0, width, height);
             spawnBox.paint(brush);
 
+            List<Asteroid> newAsteroidsList = new ArrayList<>();
             for (Iterator<Bullet> bulletIterator = bulletList.iterator(); bulletIterator.hasNext();) {
                 Bullet bullet = bulletIterator.next();
                 if (!bullet.move(width, height)) {
@@ -85,7 +86,7 @@ class Asteroids extends Game implements KeyListener {
                     continue;
                 }
                 bullet.paint(brush);
-                List<Asteroid> newAsteroidsList = new ArrayList<>(); //todo optimise
+                newAsteroidsList.clear();
                 for (Iterator<Asteroid> asteroidIterator = asteroidList.iterator(); asteroidIterator.hasNext();) {
                     Asteroid asteroid = asteroidIterator.next();
                     if (asteroid.collidesWith(bullet)) {
