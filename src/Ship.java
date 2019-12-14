@@ -13,8 +13,8 @@ public class Ship extends Polygon {
     private double xSpeed = 0;
     private double ySpeed = 0;
     private double acceleration = 0;
-    private double maxSpeed = 3.5;
-    private double drag = 0.03;
+    private double maxSpeed = 2.5;
+    private double drag = 0.01;
 
     private double xPos, yPos;
 
@@ -26,6 +26,17 @@ public class Ship extends Polygon {
 
     public void setXPos(double xPos) {this.xPos = xPos;}
     public void setYPos(double yPos) {this.yPos = yPos;}
+
+    public void reset(Point position) {
+        setAcceleration(0);
+        setSpeed(0);
+        setXSpeed(0);
+        setYSpeed(0);
+        this.position = position;
+        setYPos(position.getY());
+        setXPos(position.getX());
+        setRotation(-90);
+    }
 
     public boolean move(int width, int height) {
 
@@ -55,7 +66,7 @@ public class Ship extends Polygon {
 
 
         if (engineOn) {
-            acceleration = 0.2;
+            acceleration = 0.1;
         }
         else if (!engineOn) {
             acceleration = 0;

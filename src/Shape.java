@@ -2,7 +2,7 @@ import java.awt.*;
 
 public abstract class Shape {
     protected double speed = 0;
-    protected int rotationSpeed = 0;
+    protected double rotationSpeed = 0;
     protected Point position;   // The offset mentioned above.
     protected double rotation; // Zero degrees is due east.
     protected Color color = Color.white;
@@ -26,6 +26,9 @@ public abstract class Shape {
         this.rotation = rotation;
     }
 
+    public void setRotationSpeed(double rotationSpeed) {
+        this.rotationSpeed = rotationSpeed;
+    }
 
     public void setSpeed(double speed) {
         this.speed = speed;
@@ -81,7 +84,4 @@ public abstract class Shape {
         rotation += rotationSpeed;
     }
 
-    public void setRotationSpeed(int rotationSpeed) {
-        this.rotationSpeed = rotationSpeed;
-    }
 }
