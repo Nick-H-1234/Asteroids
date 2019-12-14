@@ -4,8 +4,6 @@ public class Ship extends Polygon {
 
     public Ship(Point position, double rotation) {
         super(SHIP_SHAPE, position, rotation, 1);
-        xPos = position.getX();
-        yPos = position.getY();
     }
 
     boolean engineOn = false;
@@ -16,16 +14,9 @@ public class Ship extends Polygon {
     private double maxSpeed = 2.5;
     private double drag = 0.01;
 
-    private double xPos, yPos;
-
-
-
     public void setXSpeed(double xSpeed) {this.xSpeed = xSpeed;}
     public void setYSpeed(double ySpeed) {this.ySpeed = ySpeed;}
     public void setAcceleration(double acceleration) {this.acceleration = acceleration;}
-
-    public void setXPos(double xPos) {this.xPos = xPos;}
-    public void setYPos(double yPos) {this.yPos = yPos;}
 
     public void reset(Point position) {
         setAcceleration(0);
@@ -33,8 +24,6 @@ public class Ship extends Polygon {
         setXSpeed(0);
         setYSpeed(0);
         this.position = position;
-        setYPos(position.getY());
-        setXPos(position.getX());
         setRotation(-90);
     }
 
@@ -107,6 +96,8 @@ public class Ship extends Polygon {
                 ySpeed += drag;
             }
         }
+        double xPos = position.getX();
+        double yPos = position.getY();
         xPos += xSpeed;
         yPos += ySpeed;
 
@@ -121,7 +112,7 @@ public class Ship extends Polygon {
             yPos = height;
         }
 
-        Point newPosition = new Point((int) xPos, (int) yPos);
+        Point newPosition = new Point(xPos, yPos);
         setPosition(newPosition);
         return true;
     }

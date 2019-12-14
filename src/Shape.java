@@ -75,7 +75,7 @@ public abstract class Shape {
             y = height;
         }
 
-        Point newPosition = new Point((int) x, (int) y);
+        Point newPosition = new Point(x,y);
         setPosition(newPosition);
         return true;
     }

@@ -9,7 +9,7 @@ public class Bullet extends Circle {
     }
 
     public boolean move(int width, int height) {
-        Point newPosition = new Point((int) (position.getX() + (speed * Math.cos(Math.toRadians(rotation)))), (int) (position.getY() + (speed * Math.sin(Math.toRadians(rotation)))));
+        Point newPosition = new Point(position.getX() + (speed * Math.cos(Math.toRadians(rotation))), position.getY() + (speed * Math.sin(Math.toRadians(rotation))));
         setPosition(newPosition);
 
         if (position.getX() < -10 || position.getX() > width+10) {

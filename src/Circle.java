@@ -54,9 +54,9 @@ public class Circle extends Shape {
 
     public void paint(Graphics brush) {
         brush.setColor(color);
-        int x = this.position.getX();
-        int y = this.position.getY();
-        brush.fillOval(x-radius,y-radius,radius*2,radius*2);
+        double x = this.position.getX();
+        double y = this.position.getY();
+        brush.fillOval((int) (x-radius),(int) (y-radius),radius*2,radius*2);
     }
 
 

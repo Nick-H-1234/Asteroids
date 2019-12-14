@@ -32,8 +32,8 @@ class Polygon extends Shape {
         this.scale = scale;
 
         // First, we find the shape's top-most left-most boundary, its origin.
-        int minx = this.shape[0].getX();
-        int miny = this.shape[0].getY();
+        double minx = this.shape[0].getX();
+        double miny = this.shape[0].getY();
         for (Point p : this.shape) {
             minx = Math.min(minx, p.getX());
             miny = Math.min(miny, p.getY());
@@ -49,6 +49,10 @@ class Polygon extends Shape {
     public Point[] getShape() {
         return shape;
     }
+    public double getScale() {
+        return scale;
+    }
+
 
     // "getPoints" applies the rotation and offset to the shape of the polygon.
     public Point[] getTransformedPoints() {
@@ -56,22 +60,22 @@ class Polygon extends Shape {
         Point[] points = new Point[shape.length];
         for (int i = 0; i < shape.length; i++) {
             Point p = shape[i];
-            int x = (int) ((((p.getX() - center.getX()) * Math.cos(Math.toRadians(rotation))
+            double x = (((p.getX() - center.getX()) * Math.cos(Math.toRadians(rotation))
                     - (p.getY() - center.getY()) * Math.sin(Math.toRadians(rotation))) * scale)
-                    + center.getX() + position.getX());
-            int y = (int) ((((p.getX() - center.getX()) * Math.sin(Math.toRadians(rotation))
+                    + center.getX() + position.getX();
+            double y = (((p.getX() - center.getX()) * Math.sin(Math.toRadians(rotation))
                     + (p.getY() - center.getY()) * Math.cos(Math.toRadians(rotation))) * scale)
-                    + center.getY() + position.getY());
+                    + center.getY() + position.getY();
             points[i] = new Point(x, y);
         }
         return points;
     }
 
     public Point makePointOnCircle(Point position, double angle, int radius) {
-        int x = (int) (radius * Math.cos(Math.toRadians(angle))
-                + position.getX());
-        int y = (int) (radius * Math.sin(Math.toRadians(angle))
-                 + position.getY());
+        double x = radius * Math.cos(Math.toRadians(angle))
+                + position.getX();
+        double y = radius * Math.sin(Math.toRadians(angle))
+                 + position.getY();
         Point point = new Point (x,y);
         return point;
     }
@@ -151,7 +155,7 @@ class Polygon extends Shape {
 
     @Override
     protected Point findCenter() {
-        int x = 0 , y = 0;
+        double x = 0 , y = 0;
         for (int i = 0, j = 1; i < shape.length; i++, j = (j + 1) % shape.length) {
             x += (shape[i].getX() + shape[j].getX())
                     * (shape[i].getX() * shape[j].getY() - shape[j].getX() * shape[i].getY());
@@ -159,7 +163,7 @@ class Polygon extends Shape {
                     * (shape[i].getX() * shape[j].getY() - shape[j].getX() * shape[i].getY());
         }
         double area = findArea();
-        return new Point((int) Math.abs(x / (6 * area)), (int) Math.abs(y / (6 * area)));
+        return new Point(Math.abs(x / (6 * area)), Math.abs(y / (6 * area)));
     }
 
     @Override
@@ -169,13 +173,10 @@ class Polygon extends Shape {
         int[] xValues = new int[transformedPoints.length];
         int[] yValues = new int[transformedPoints.length];
         for (int i = 0; i < transformedPoints.length; i++) {
-            xValues[i] = transformedPoints[i].getX();
-            yValues[i] = transformedPoints[i].getY();
+            xValues[i] = (int) transformedPoints[i].getX();
+            yValues[i] = (int) transformedPoints[i].getY();
         }
         brush.drawPolygon(xValues, yValues, transformedPoints.length);
     }
 
-    public double getScale() {
-        return scale;
-    }
 }

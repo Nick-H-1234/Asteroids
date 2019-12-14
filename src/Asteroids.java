@@ -28,10 +28,10 @@ class Asteroids extends Game implements KeyListener {
 
     public Asteroids() {
         super("Asteroids!", 800, 600);
-        spawnBox = new Polygon(new Point[]{new Point(0, 0), new Point(width / 3, 0), new Point(width / 3, height / 3), new Point(0, height / 3)}, new Point(width / 3, height / 3), 0, 1);
+        spawnBox = new Polygon(new Point[]{new Point(0, 0), new Point(width / 3.0, 0), new Point(width / 3.0, height / 3.0), new Point(0, height / 3.0)}, new Point(width / 3.0, height / 3.0), 0, 1);
         spawnBox.color = Color.green;
         frame.addKeyListener(this);
-        ship = new Ship(new Point(width / 2, height / 2), -90);
+        ship = new Ship(new Point(width / 2.0, height / 2.0), -90);
         generateAsteroidsForLevel(level);
         lives = maxLives;
         new Thread(new Runnable() {
@@ -49,12 +49,11 @@ class Asteroids extends Game implements KeyListener {
     }
 
     private void generateAsteroidsForLevel(int level) {
-        Point spawnBoxPosition = new Point(ship.position.getX() - (width / 6), ship.getPosition().getY() - (height / 6));
+        Point spawnBoxPosition = new Point(ship.position.getX() - (width / 6.0), ship.getPosition().getY() - (height / 6.0));
         spawnBox.setPosition(spawnBoxPosition);
         asteroidList.clear();
         int asteroidsNumber = (level * 2) + 2;
         for (int i = 0; i < asteroidsNumber; i++) {
-
             Asteroid asteroid = new Asteroid(generateShape(), generateLocation(), generateRotation(), 2);
             if (asteroid.collidesWith(spawnBox)) {
                 i--;
@@ -64,7 +63,6 @@ class Asteroids extends Game implements KeyListener {
         }
     }
 
-
     public Point[] generateShape() {
         return Math.random() < 0.5 ? Asteroid.ASTEROID_SHAPE_3 : Asteroid.ASTEROID_SHAPE_4;
     }
@@ -72,7 +70,7 @@ class Asteroids extends Game implements KeyListener {
     public Point generateLocation() {
         double x = Math.random() * width;
         double y = Math.random() * height;
-        return new Point((int) x, (int) y);
+        return new Point(x,y);
     }
 
     public double generateRotation() {
@@ -138,8 +136,8 @@ class Asteroids extends Game implements KeyListener {
                 if (ship.collidesWith(asteroid) && lives > 1) {
                     explode(ship.getPosition());
                     lives--;
-                    spawnBox.setPosition(new Point(width / 3, height / 3));
-                    ship.reset(new Point(width / 2, height / 2));
+                    spawnBox.setPosition(new Point(width / 3.0, height / 3.0));
+                    ship.reset(new Point(width / 2.0, height / 2.0));
                 } else if (ship.collidesWith(asteroid)) {
                     brush.setColor(Color.red);
                     brush.drawString("game over", width / 2, height / 2);
@@ -168,7 +166,6 @@ class Asteroids extends Game implements KeyListener {
     }
 
     public void shoot() {
-
         double rotation = ship.getRotation();
         Point position = ship.getTransformedPoints()[2];
         Bullet bullet = new Bullet(position, rotation);
@@ -203,7 +200,7 @@ class Asteroids extends Game implements KeyListener {
             level = 1;
             lives = maxLives;
             bulletList.clear();
-            ship.reset(new Point(width / 2, height / 2));
+            ship.reset(new Point(width / 2.0, height / 2.0));
             generateAsteroidsForLevel(level);
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             System.exit(0);

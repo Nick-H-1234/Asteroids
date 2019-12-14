@@ -6,8 +6,8 @@ import static java.lang.Math.sqrt;
 public class ShapeTest {
     public static final Point[] SQUARE100_POINTS = {new Point(0, 0), new Point(100, 0), new Point(100, 100), new Point(0, 100)};
     public static final Point[] SQUARE100_POINTS_40_50 = {new Point(40, 50), new Point(140, 50), new Point(140, 150), new Point(40, 150)};
-    public static final Point[] SQUARE100_POINTS_30 = {new Point(31, -18), new Point(118, 31), new Point(68, 118), new Point(-18, 68)};
-    public static final Point[] SQUARE100_POINTS_40_50_30 = {new Point(71, 31), new Point(158, 81), new Point(108, 168), new Point(21, 118)};
+    public static final Point[] SQUARE100_POINTS_30 = {new Point(31.698729810778058, -18.30127018922194), new Point(118.30127018922194, 31.698729810778058), new Point(68.30127018922194, 118.30127018922194), new Point(-18.30127018922194, 68.30127018922194)};
+    public static final Point[] SQUARE100_POINTS_40_50_30 = {new Point(71.69872981077806, 31.69872981077806), new Point(158.30127018922195, 81.69872981077806), new Point(108.30127018922194, 168.30127018922195), new Point(21.69872981077806, 118.30127018922194)};
 
     public static final Point[] SQUARE200_POINTS = {new Point(-50, -50), new Point(150, -50), new Point(150, 150), new Point(-50, 150)};
     public static final Point[] SQUARE150_POINTS = {new Point(-25, -25), new Point(125, -25), new Point(125, 125), new Point(-25, 125)};
@@ -127,7 +127,7 @@ public class ShapeTest {
         Polygon polygon = new Polygon(SQUARE100_POINTS,new Point(0,0), 0, 1);
         Assert.assertEquals(new Point(5,0), polygon.makePointOnCircle(new Point(0,0), 0, 5));
         Assert.assertEquals(new Point(0,5), polygon.makePointOnCircle(new Point(0,0), 90, 5));
-        Assert.assertEquals(new Point((int) (-5 / sqrt(2)),(int) (-5 / sqrt(2))), polygon.makePointOnCircle(new Point(0,0), 225, 5));
+        Assert.assertEquals(new Point( -5 / sqrt(2), -5 / sqrt(2)), polygon.makePointOnCircle(new Point(0,0), 225, 5));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class ShapeTest {
         Polygon polygon = new Polygon(SQUARE100_POINTS,new Point(0,0), 0,1 );
         Assert.assertEquals(new Point(15,20), polygon.makePointOnCircle(new Point(10,20), 0, 5));
         Assert.assertEquals(new Point(10,25), polygon.makePointOnCircle(new Point(10,20), 90, 5));
-        Assert.assertEquals(new Point((int) (10+(-5 / sqrt(2))),(int) (20+(-5 / sqrt(2)))), polygon.makePointOnCircle(new Point(10,20), 225, 5));
+        Assert.assertEquals(new Point (10+(-5 / sqrt(2)), 20+(-5 / sqrt(2))), polygon.makePointOnCircle(new Point(10,20), 225, 5));
     }
 
     @Test

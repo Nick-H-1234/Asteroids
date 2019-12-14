@@ -9,10 +9,11 @@ DESCRIPTION: Ah, if only real-life classes were this straight-forward. We'll
  * Represents an immutable point on the x,y plane.
  */
 class Point implements Cloneable {
-    private int x;
-    private int y;
+    public static final double tolerance = 1E-12;
+    private double x;
+    private double y;
 
-    public Point(int x, int y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -31,7 +32,7 @@ class Point implements Cloneable {
             return false;
         }
         Point otherPoint = (Point) other;
-        return otherPoint.getX() == this.getX() && otherPoint.getY() == this.getY();
+        return Math.abs(otherPoint.getX() - this.getX()) < tolerance && Math.abs(otherPoint.getY() - this.getY()) < tolerance;
     }
 
     @Override
@@ -43,11 +44,11 @@ class Point implements Cloneable {
         return "x: " + getX() + " y: " + getY();
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
