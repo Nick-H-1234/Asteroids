@@ -16,20 +16,27 @@ import java.awt.*;
 
 class Polygon extends Shape {
     private Point[] shape;   // An array of points.
-    protected double scale = 2;
+    protected double scale;
+    protected double rotation;
+    protected double rotationSpeed;
 
     /**
      * Creates a polygon based at position, where the shape is defined in shape, as displacements from position.
      * shape is pre-processed to be as close as possible to the origin.
      * @param shape displacements from position which defines the shape in x, y coordinates
-     * @param position the reference point of the shape in x, y coordinates
-     * @param rotation the rotation of the shape in degrees
      * @param scale the scale of the shape
+     * @param position the reference point of the shape in x, y coordinates
+     * @param rotation
+     * @param rotationSpeed
+     * @param speed
+     * @param direction the rotation of the shape in degrees
      */
-    public Polygon(Point[] shape, Point position, double rotation, double scale) {
-        super(position, rotation);
+    public Polygon(Point[] shape, double scale, Point position, double rotation, double rotationSpeed, double speed, double direction) {
+        super(position, direction, speed);
         this.shape = shape;
         this.scale = scale;
+        this.rotation = rotation;
+        this.rotationSpeed = rotationSpeed;
 
         // First, we find the shape's top-most left-most boundary, its origin.
         double minx = this.shape[0].getX();
@@ -52,11 +59,19 @@ class Polygon extends Shape {
     public double getScale() {
         return scale;
     }
+    public double getRotation() {return rotation;}
 
+    public void setRotationSpeed(double rotationSpeed) {
+        this.rotationSpeed = rotationSpeed;
+    }
+
+    public void rotate() {
+        rotation += rotationSpeed;
+    }
 
     // "getPoints" applies the rotation and offset to the shape of the polygon.
     public Point[] getTransformedPoints() {
-        Point center = findCenter();
+        Point center = findCentre();
         Point[] points = new Point[shape.length];
         for (int i = 0; i < shape.length; i++) {
             Point p = shape[i];
@@ -70,6 +85,7 @@ class Polygon extends Shape {
         }
         return points;
     }
+
 
     public Point makePointOnCircle(Point position, double angle, int radius) {
         double x = radius * Math.cos(Math.toRadians(angle))
@@ -105,11 +121,11 @@ class Polygon extends Shape {
             // Make a polygon that approximates the circle
             Point[] approximationPoints = new Point[8];
             for (int i = 0; i < 8;i++) {
-                approximationPoints[i] = makePointOnCircle(circle.findCenter(), i*45, circle.getRadius());
+                approximationPoints[i] = makePointOnCircle(circle.findCentre(), i*45, circle.getRadius());
             }
-            Point circleCenter = circle.findCenter();
+            Point circleCenter = circle.findCentre();
             Point polygonPosition = new Point(circleCenter.getX() -circle.getRadius(), circleCenter.getY() -circle.getRadius());
-            Polygon approximation = new Polygon(approximationPoints, polygonPosition,0, 1);
+            Polygon approximation = new Polygon(approximationPoints, 1, polygonPosition, 0, 0, 0, 0);
             return collidesWith(approximation);
         }
         return false;
@@ -130,10 +146,6 @@ class Polygon extends Shape {
         }
         return crossingNumber % 2 == 1;
     }
-
-    //public void rotate(int degrees) {
-    //    rotation = (rotation + degrees) % 360;
-    //}
   
   /*
   The following methods are private access restricted because, as this access
@@ -151,10 +163,8 @@ class Polygon extends Shape {
     }
 
     // "findCenter" implements another bit of math.
-
-
     @Override
-    protected Point findCenter() {
+    protected Point findCentre() {
         double x = 0 , y = 0;
         for (int i = 0, j = 1; i < shape.length; i++, j = (j + 1) % shape.length) {
             x += (shape[i].getX() + shape[j].getX())
@@ -178,5 +188,4 @@ class Polygon extends Shape {
         }
         brush.drawPolygon(xValues, yValues, transformedPoints.length);
     }
-
 }

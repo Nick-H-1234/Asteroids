@@ -1,15 +1,15 @@
 import java.awt.*;
 
 public abstract class Shape {
-    protected double speed = 0;
-    protected double rotationSpeed = 0;
     protected Point position;   // The offset mentioned above.
-    protected double rotation; // Zero degrees is due east.
+    protected double direction; // Zero degrees is due east.
+    protected double speed;
     protected Color color = Color.white;
 
-    public Shape(Point position, double rotation) {
+    public Shape(Point position, double direction, double speed) {
         this.position = position;
-        this.rotation = rotation;
+        this.direction = direction;
+        this.speed = speed;
     }
 
     public Point getPosition() {
@@ -19,20 +19,12 @@ public abstract class Shape {
         this.position = position;
     }
 
-    public double getRotation() {
-        return this.rotation;
-    }
-    public void setRotation(double rotation) {
-        this.rotation = rotation;
+    public double getDirection() { return this.direction; }
+    public void setDirection(double direction) {
+        this.direction = direction;
     }
 
-    public void setRotationSpeed(double rotationSpeed) {
-        this.rotationSpeed = rotationSpeed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
+    public void setSpeed(double speed) { this.speed = speed; }
 
     public abstract boolean collidesWith(Shape other);
 
@@ -50,7 +42,7 @@ public abstract class Shape {
      * Locate the centre of this shape before any translation or rotation.
      * @return Point: The centre point.
      */
-    protected abstract Point findCenter();
+    protected abstract Point findCentre();
 
     public abstract void paint(Graphics brush);
 
@@ -61,8 +53,8 @@ public abstract class Shape {
      * @return true if the shape is still active after the move.
      */
     public boolean move(int width, int height) {
-        double x = position.getX() + (speed * Math.cos(Math.toRadians(rotation)));
-        double y = position.getY() + (speed * Math.sin(Math.toRadians(rotation)));
+        double x = position.getX() + (speed * Math.cos(Math.toRadians(direction)));
+        double y = position.getY() + (speed * Math.sin(Math.toRadians(direction)));
 
         if (x > width) {
             x = 0;
@@ -80,8 +72,6 @@ public abstract class Shape {
         return true;
     }
 
-    public void rotate() {
-        rotation += rotationSpeed;
-    }
+
 
 }

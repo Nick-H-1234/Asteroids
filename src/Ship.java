@@ -1,18 +1,18 @@
 public class Ship extends Polygon {
 
     public static final Point[] SHIP_SHAPE = {new Point(0, 0), new Point(0, 40), new Point(60, 20)};
-
-    public Ship(Point position, double rotation) {
-        super(SHIP_SHAPE, position, rotation, 1);
-    }
+    private static final double MAX_SPEED = 2.5;
+    private static final double DRAG = 0.01;
 
     boolean engineOn = false;
-
     private double xSpeed = 0;
     private double ySpeed = 0;
     private double acceleration = 0;
-    private double maxSpeed = 2.5;
-    private double drag = 0.01;
+
+    public Ship(Point position, double direction, double scale) {
+        super(SHIP_SHAPE, scale, position,-90, 0, 0, direction);
+        this.scale = scale;
+    }
 
     public void setXSpeed(double xSpeed) {this.xSpeed = xSpeed;}
     public void setYSpeed(double ySpeed) {this.ySpeed = ySpeed;}
@@ -24,7 +24,9 @@ public class Ship extends Polygon {
         setXSpeed(0);
         setYSpeed(0);
         this.position = position;
-        setRotation(-90);
+    }
+
+    public void setRotation(double rotation) {this.rotation = rotation;
     }
 
     public boolean move(int width, int height) {
@@ -65,35 +67,35 @@ public class Ship extends Polygon {
         ySpeed += acceleration * Math.sin(Math.toRadians(rotation));
 
         if (xSpeed > 0.05) {
-            if (xSpeed > maxSpeed) {
-                xSpeed = maxSpeed;
+            if (xSpeed > MAX_SPEED) {
+                xSpeed = MAX_SPEED;
             }
             else if (!engineOn) {
-                xSpeed -= drag;
+                xSpeed -= DRAG;
             }
         }
         else if (xSpeed < -0.05) {
-            if (xSpeed < 0-maxSpeed) {
-                xSpeed = 0-maxSpeed;
+            if (xSpeed < 0- MAX_SPEED) {
+                xSpeed = 0- MAX_SPEED;
             }
             else if (!engineOn) {
-                xSpeed += drag;
+                xSpeed += DRAG;
             }
         }
         if (ySpeed > 0.05) {
-            if (ySpeed > maxSpeed) {
-                ySpeed = maxSpeed;
+            if (ySpeed > MAX_SPEED) {
+                ySpeed = MAX_SPEED;
             }
             else if (!engineOn){
-                ySpeed -= drag;
+                ySpeed -= DRAG;
             }
         }
         else if (ySpeed < -0.05) {
-            if (ySpeed < 0-maxSpeed) {
-                ySpeed = 0-maxSpeed;
+            if (ySpeed < 0- MAX_SPEED) {
+                ySpeed = 0- MAX_SPEED;
             }
             else if (!engineOn) {
-                ySpeed += drag;
+                ySpeed += DRAG;
             }
         }
         double xPos = position.getX();

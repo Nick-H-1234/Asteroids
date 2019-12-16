@@ -5,13 +5,14 @@ public class Circle extends Shape {
 
     /**
      * Creates a circle centered on position, with radius radius.
-     * @param position the centre of the circle.
      * @param radius the radius of the circle.
-     * @param rotation the rotation of the circle.
+     * @param position the centre of the circle.
+     * @param direction the rotation of the circle.
+     * @param speed
      *
      */
-    public Circle(Point position, int radius, double rotation) {
-        super(position, rotation);
+    public Circle(int radius, Point position, double direction, double speed) {
+        super(position, direction, speed);
         this.radius = radius;
     }
 
@@ -48,16 +49,15 @@ public class Circle extends Shape {
     }
 
     @Override
-    protected Point findCenter() {
+    protected Point findCentre() {
         return position;
     }
 
+    @Override
     public void paint(Graphics brush) {
         brush.setColor(color);
         double x = this.position.getX();
         double y = this.position.getY();
         brush.fillOval((int) (x-radius),(int) (y-radius),radius*2,radius*2);
     }
-
-
 }
