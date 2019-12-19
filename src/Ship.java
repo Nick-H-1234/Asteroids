@@ -2,7 +2,7 @@ public class Ship extends Polygon {
 
     public static final Point[] SHIP_SHAPE = {new Point(0, 0), new Point(0, 40), new Point(60, 20)};
     private static final double MAX_SPEED = 2.5;
-    private static final double DRAG = 0.01;
+    private static final double DRAG = 0.006;
 
     boolean engineOn = false;
     private double xSpeed = 0;

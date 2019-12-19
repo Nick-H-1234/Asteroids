@@ -24,6 +24,7 @@ class Asteroids extends Game implements KeyListener {
     int maxLives = 3;
     int lives;
     int score;
+    int cooldown;
 
 
     public Asteroids() {
@@ -112,8 +113,8 @@ class Asteroids extends Game implements KeyListener {
                         if (asteroid.scale > 1) {
                             Point point = asteroid.getPosition();
                             double direction = asteroid.getDirection();
-                            newAsteroidsList.add(new Asteroid(asteroid.getShape(), asteroid.getScale() - 0.5, point, 1, direction + Math.random()*30));
-                            newAsteroidsList.add(new Asteroid(asteroid.getShape(), asteroid.getScale() - 0.5, point, 1, direction - Math.random()*30));
+                            newAsteroidsList.add(new Asteroid(asteroid.getShape(), asteroid.getScale() - 0.5, point, asteroid.speed + Math.random() + 0.3, direction + Math.random()*30));
+                            newAsteroidsList.add(new Asteroid(asteroid.getShape(), asteroid.getScale() - 0.5, point, asteroid.speed + Math.random() + 0.3, direction - Math.random()*30));
                             score += 100;
                         }
                         explode(asteroid.getPosition());
@@ -164,6 +165,7 @@ class Asteroids extends Game implements KeyListener {
                 }
                 effect.paint(brush);
             }
+            if (cooldown > 0) cooldown--;
         }
     }
 
@@ -172,10 +174,13 @@ class Asteroids extends Game implements KeyListener {
     }
 
     public void shoot() {
-        double rotation = ship.getRotation();
-        Point position = ship.getTransformedPoints()[2];
-        Bullet bullet = new Bullet(position, rotation, 6);
-        bulletList.add(bullet);
+        if(cooldown == 0) {
+            double rotation = ship.getRotation();
+            Point position = ship.getTransformedPoints()[2];
+            Bullet bullet = new Bullet(position, rotation, 6);
+            bulletList.add(bullet);
+            cooldown = 6;
+        }
     }
 
     public void explode(Point position) {
@@ -204,6 +209,7 @@ class Asteroids extends Game implements KeyListener {
         } else if (e.getKeyChar() == 'r') {
             gameOver = false;
             level = 1;
+            score = 0;
             lives = maxLives;
             bulletList.clear();
             ship.reset(new Point(width / 2.0, height / 2.0));
