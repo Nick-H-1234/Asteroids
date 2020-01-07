@@ -28,11 +28,10 @@ class Polygon extends Shape {
      * @param position the reference point of the shape in x, y coordinates
      * @param rotation
      * @param rotationSpeed
-     * @param speed
-     * @param direction the rotation of the shape in degrees
+     * @param velocity
      */
-    public Polygon(Point[] shape, double scale, Point position, double rotation, double rotationSpeed, double speed, double direction) {
-        super(position, direction, speed);
+    public Polygon(Point[] shape, double scale, Point position, double rotation, double rotationSpeed, Velocity velocity) {
+        super(position, velocity);
         this.shape = shape;
         this.scale = scale;
         this.rotation = rotation;
@@ -125,7 +124,7 @@ class Polygon extends Shape {
             }
             Point circleCenter = circle.findCentre();
             Point polygonPosition = new Point(circleCenter.getX() -circle.getRadius(), circleCenter.getY() -circle.getRadius());
-            Polygon approximation = new Polygon(approximationPoints, 1, polygonPosition, 0, 0, 0, 0);
+            Polygon approximation = new Polygon(approximationPoints, 1, polygonPosition, 0, 0, new Velocity(0,0));
             return collidesWith(approximation);
         }
         return false;

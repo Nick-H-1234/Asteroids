@@ -2,14 +2,14 @@ import java.awt.*;
 
 public class Bullet extends Circle {
 
-    public Bullet(Point position, double direction, double speed) {
-        super(2, position, direction, speed);
+    public Bullet(Point position, Velocity velocity) {
+        super(2, position, velocity);
         color = Color.red;
     }
 
     @Override
     public boolean move(int width, int height) {
-        Point newPosition = new Point(position.getX() + (speed * Math.cos(Math.toRadians(direction))), position.getY() + (speed * Math.sin(Math.toRadians(direction))));
+        Point newPosition = new Point(position.getX() + (velocity.getSpeed() * Math.cos(Math.toRadians(velocity.getDirection()))), position.getY() + (velocity.getSpeed() * Math.sin(Math.toRadians(velocity.getDirection()))));
         setPosition(newPosition);
 
         if (position.getX() < -10 || position.getX() > width+10) {

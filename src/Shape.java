@@ -1,15 +1,14 @@
 import java.awt.*;
+import java.beans.VetoableChangeListener;
 
 public abstract class Shape {
     protected Point position;   // The offset mentioned above.
-    protected double direction; // Zero degrees is due east.
-    protected double speed;
+    protected Velocity velocity; // Zero degrees is due east (along x axis)
     protected Color color = Color.white;
 
-    public Shape(Point position, double direction, double speed) {
+    public Shape(Point position, Velocity velocity) {
         this.position = position;
-        this.direction = direction;
-        this.speed = speed;
+        this.velocity = velocity;
     }
 
     public Point getPosition() {
@@ -19,12 +18,12 @@ public abstract class Shape {
         this.position = position;
     }
 
-    public double getDirection() { return this.direction; }
-    public void setDirection(double direction) {
-        this.direction = direction;
-    }
+//    public double getDirection() { return this.direction; }
+//    public void setDirection(double direction) {
+//        this.direction = direction;
+//    }
 
-    public void setSpeed(double speed) { this.speed = speed; }
+//    public void setSpeed(double speed) { this.speed = speed; }
 
     public abstract boolean collidesWith(Shape other);
 
@@ -53,8 +52,8 @@ public abstract class Shape {
      * @return true if the shape is still active after the move.
      */
     public boolean move(int width, int height) {
-        double x = position.getX() + (speed * Math.cos(Math.toRadians(direction)));
-        double y = position.getY() + (speed * Math.sin(Math.toRadians(direction)));
+        double x = position.getX() + (velocity.getSpeed() * Math.cos(Math.toRadians(velocity.getDirection())));
+        double y = position.getY() + (velocity.getSpeed() * Math.sin(Math.toRadians(velocity.getDirection())));
 
         if (x > width) {
             x = 0;

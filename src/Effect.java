@@ -5,11 +5,11 @@ public class Effect extends Circle {
      * Creates a circle centered on position, with radius radius.
      * @param radius   the radius of the circle.
      * @param position the centre of the circle.
-     * @param direction the rotation of the circle.
+     * @param velocity
      * @param duration the duration of the effect in frames.
      */
-    public Effect(int radius, Point position, double direction, int duration) {
-        super(radius, position, direction, 0);
+    public Effect(int radius, Point position, Velocity velocity, int duration) {
+        super(radius, position, velocity);
         this.duration = duration;
     }
 

@@ -15,32 +15,32 @@ public class ShapeTest {
     // Polygon vs Polygon collisions
     @Test
     public void shipOutsideSquare() {
-        Ship ship = new Ship(new Point (200,0),0, 1);
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, 0, 0);
+        Ship ship = new Ship(new Point (200,0), 1, new Velocity(0,0));
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, new Velocity(0,0));
         Assert.assertFalse(ship.collidesWith(square));
         Assert.assertFalse(square.collidesWith(ship));
     }
 
     @Test
     public void shipInsideSquare() {
-        Ship ship = new Ship(new Point (20,20),0, 1);
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, 0, 0);
+        Ship ship = new Ship(new Point (20,20), 1,new Velocity(0,0));
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, new Velocity(0,0));
         Assert.assertTrue(square.collidesWith(ship));
         Assert.assertTrue(ship.collidesWith(square));
     }
 
     @Test
     public void shipOverlapsSideOfSquare() {
-        Ship ship = new Ship(new Point (90,50),0, 1);
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, 0, 0);
+        Ship ship = new Ship(new Point (90,50), 1,new Velocity(0,0));
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, new Velocity(0,0));
         Assert.assertTrue(ship.collidesWith(square));
         Assert.assertTrue(square.collidesWith(ship));
     }
 
     @Test
     public void shipOverlapsCornerOfSquare() {
-        Ship ship = new Ship(new Point (99,90),0, 1);
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (50,50), 0, 0, 0, 0);
+        Ship ship = new Ship(new Point (99,90), 1,new Velocity(0,0));
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (50,50), 0, 0, new Velocity(0,0));
         Assert.assertTrue(ship.collidesWith(square));
         Assert.assertTrue(square.collidesWith(ship));
     }
@@ -49,19 +49,19 @@ public class ShapeTest {
     // Find centre of Polygon
     @Test
     public void findCentreOfSquare() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (100,100), 0, 0, 0, 0);
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (100,100), 0, 0, new Velocity(0,0));
         Assert.assertEquals(new Point(50,50),square.findCentre());
     }
 
     @Test
     public void findCentreOfSquare2() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, 0, 0);
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, new Velocity(0,0));
         Assert.assertEquals(new Point(50,50),square.findCentre());
     }
 
     @Test
     public void findCentreOfSquare3() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (200,250), 0, 0, 0, 95);
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (200,250), 0, 0, new Velocity(0,0));
         Assert.assertEquals(new Point(50,50),square.findCentre());
     }
 
@@ -69,7 +69,7 @@ public class ShapeTest {
     //Test getTranformedPoints()
     @Test
     public void testTransform() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, 0, 0);
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, new Velocity(0,0));
         Point[] result = square.getTransformedPoints();
         for (int i = 0; i < result.length; i++) {
             System.out.println(result[i]);
@@ -79,14 +79,14 @@ public class ShapeTest {
 
     @Test
     public void testTransform40_50() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (40,50), 0, 0, 0, 0);
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (40,50), 0, 0, new Velocity(0,0));
         Point[] result = square.getTransformedPoints();
         Assert.assertArrayEquals(SQUARE100_POINTS_40_50, result);
     }
 
     @Test
     public void testTransform0_0_30() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, 0, 30);
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, new Velocity(0,0));
         square.rotation = 30;
         Point[] result = square.getTransformedPoints();
         Assert.assertArrayEquals(SQUARE100_POINTS_30, result);
@@ -94,7 +94,7 @@ public class ShapeTest {
 
     @Test
     public void testTransform40_50_30() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (40,50), 0, 0, 0, 30);
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (40,50), 0, 0, new Velocity(0,0));
         square.rotation = 30;
         Point[] result = square.getTransformedPoints();
         Assert.assertArrayEquals(SQUARE100_POINTS_40_50_30, result);
@@ -104,29 +104,29 @@ public class ShapeTest {
     //Test Polygon vs Circle collisions
     @Test
     public void circleOutsideSquare() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, 0, 0);
-        Circle circle = new Circle(5, new Point(200,0), 0, 0);
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, new Velocity(0,0));
+        Circle circle = new Circle(5, new Point(200,0),new Velocity(0,0));
         Assert.assertFalse(square.collidesWith(circle));
     }
 
     @Test
     public void circleInsideSquare() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, 0, 0);
-        Circle circle = new Circle(5, new Point(50,50), 0, 0);
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, new Velocity(0,0));
+        Circle circle = new Circle(5, new Point(50,50),new Velocity(0,0));
         Assert.assertTrue(square.collidesWith(circle));
     }
 
     @Test
     public void circleOverlapsSquare() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, 0, 0);
-        Circle circle = new Circle(5, new Point(102,50), 0, 0);
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, new Velocity(0,0));
+        Circle circle = new Circle(5, new Point(102,50),new Velocity(0,0));
         Assert.assertTrue(square.collidesWith(circle));
     }
 
 
     @Test
     public void testMakeCirclePoints() {
-        Polygon polygon = new Polygon(SQUARE100_POINTS, 1, new Point(0,0), 0, 0, 0, 0);
+        Polygon polygon = new Polygon(SQUARE100_POINTS, 1, new Point(0,0), 0, 0, new Velocity(0,0));
         Assert.assertEquals(new Point(5,0), polygon.makePointOnCircle(new Point(0,0), 0, 5));
         Assert.assertEquals(new Point(0,5), polygon.makePointOnCircle(new Point(0,0), 90, 5));
         Assert.assertEquals(new Point( -5 / sqrt(2), -5 / sqrt(2)), polygon.makePointOnCircle(new Point(0,0), 225, 5));
@@ -134,7 +134,7 @@ public class ShapeTest {
 
     @Test
     public void testMakeTranslatedCirclePoints() {
-        Polygon polygon = new Polygon(SQUARE100_POINTS, 1, new Point(0,0), 0, 0, 0, 0);
+        Polygon polygon = new Polygon(SQUARE100_POINTS, 1, new Point(0,0), 0, 0, new Velocity(0,0));
         Assert.assertEquals(new Point(15,20), polygon.makePointOnCircle(new Point(10,20), 0, 5));
         Assert.assertEquals(new Point(10,25), polygon.makePointOnCircle(new Point(10,20), 90, 5));
         Assert.assertEquals(new Point (10+(-5 / sqrt(2)), 20+(-5 / sqrt(2))), polygon.makePointOnCircle(new Point(10,20), 225, 5));
@@ -142,15 +142,33 @@ public class ShapeTest {
 
     @Test
     public void testScale2() {
-        Asteroid asteroid = new Asteroid(SQUARE100_POINTS, 2, new Point(0,0), 1, 0);
+        Asteroid asteroid = new Asteroid(SQUARE100_POINTS, 2, new Point(0,0), new Velocity(0, 0));
         Point[] result = asteroid.getTransformedPoints();
         Assert.assertArrayEquals(SQUARE200_POINTS,result);
     }
 
     @Test
     public void testScale1Point5() {
-        Asteroid asteroid = new Asteroid(SQUARE100_POINTS, 1.5, new Point(0,0), 1, 0);
+        Asteroid asteroid = new Asteroid(SQUARE100_POINTS, 1.5, new Point(0,0), new Velocity(0, 0));
         Point[] result = asteroid.getTransformedPoints();
         Assert.assertArrayEquals(SQUARE150_POINTS,result);
+    }
+
+
+    @Test
+    public void testVectorAddition() {
+        Velocity velocity1 = new Velocity(30,1);
+        Velocity velocity2 = new Velocity(90,2);
+        Velocity velocity3 = new Velocity(70.9,2.65);
+        Velocity result = Velocity.add(velocity1,velocity2);
+        Assert.assertEquals(new Velocity(70.89339464913091,2.6457513110645907), Velocity.add(velocity1,velocity2));
+    }
+
+    @Test
+    public void testVector2() {
+        Velocity velocity1 = new Velocity(30,1);
+        Velocity velocity2 = new Velocity(210,2);
+        Velocity velocity3 = new Velocity(210,1);
+        Assert.assertEquals(velocity3, Velocity.add(velocity1,velocity2));
     }
 }

@@ -29,10 +29,10 @@ class Asteroids extends Game implements KeyListener {
 
     public Asteroids() {
         super("Asteroids!", 800, 600);
-        spawnBox = new Polygon(new Point[]{new Point(0, 0), new Point(width / 3.0, 0), new Point(width / 3.0, height / 3.0), new Point(0, height / 3.0)}, 1, new Point(width / 3.0, height / 3.0), 0, 0, 0, 0);
+        spawnBox = new Polygon(new Point[]{new Point(0, 0), new Point(width / 3.0, 0), new Point(width / 3.0, height / 3.0), new Point(0, height / 3.0)}, 1, new Point(width / 3.0, height / 3.0), 0, 0, new Velocity(0,0));
         spawnBox.color = Color.green;
         frame.addKeyListener(this);
-        ship = new Ship(new Point(width / 2.0, height / 2.0), -90, 1);
+        ship = new Ship(new Point(width / 2.0, height / 2.0), 1, new Velocity(0,0));
         generateAsteroidsForLevel(level);
         lives = maxLives;
         score = 0;
@@ -56,7 +56,7 @@ class Asteroids extends Game implements KeyListener {
         asteroidList.clear();
         int asteroidsNumber = (level * 2) + 2;
         for (int i = 0; i < asteroidsNumber; i++) {
-            Asteroid asteroid = new Asteroid(generateShape(), 2, generateLocation(), 1, generateRotation());
+            Asteroid asteroid = new Asteroid(generateShape(), 2, generateLocation(), new Velocity(generateRotation(), 1));
             if (asteroid.collidesWith(spawnBox)) {
                 i--;
             } else {
@@ -82,13 +82,19 @@ class Asteroids extends Game implements KeyListener {
 
     public void paint(Graphics brush) {
         if (!gameOver) {
-            brush.setColor(Color.black);
+//            Velocity velocity1 = new Velocity(0,0);
+//            Velocity velocity2 = new Velocity(90,3);
+//            Velocity result = Velocity.add(velocity1,velocity2);
+//            System.out.println("" + result.getSpeed() + " " + Math.toDegrees(result.getDirection()));
+
+            System.out.println("" + ship.velocity.getSpeed() + " and " + ship.velocity.getDirection());
+
             brush.fillRect(0, 0, width, height);
             spawnBox.paint(brush);
 
             livesList.clear();
             for (int i = 0; i < lives; i++) {
-                Ship spareShip = new Ship(new Point(10 + (i * 35), 10), -90, 0.7);
+                Ship spareShip = new Ship(new Point(10 + (i * 35), 10), 0.7, new Velocity(0,0));
                 spareShip.color = Color.white;
                 livesList.add(spareShip);
             }
@@ -112,9 +118,10 @@ class Asteroids extends Game implements KeyListener {
                     if (asteroid.collidesWith(bullet)) {
                         if (asteroid.scale > 1) {
                             Point point = asteroid.getPosition();
-                            double direction = asteroid.getDirection();
-                            newAsteroidsList.add(new Asteroid(asteroid.getShape(), asteroid.getScale() - 0.5, point, asteroid.speed + Math.random() + 0.3, direction + Math.random()*30));
-                            newAsteroidsList.add(new Asteroid(asteroid.getShape(), asteroid.getScale() - 0.5, point, asteroid.speed + Math.random() + 0.3, direction - Math.random()*30));
+                            double direction = asteroid.velocity.getDirection();
+                            double speed = asteroid.velocity.getSpeed();
+                            newAsteroidsList.add(new Asteroid(asteroid.getShape(), asteroid.getScale() - 0.5, point, new Velocity(direction + Math.random()*30,speed + Math.random() + 0.2)));
+                            newAsteroidsList.add(new Asteroid(asteroid.getShape(), asteroid.getScale() - 0.5, point, new Velocity(direction - Math.random()*30, speed + Math.random() + 0.2)));
                             score += 100;
                         }
                         explode(asteroid.getPosition());
@@ -177,7 +184,7 @@ class Asteroids extends Game implements KeyListener {
         if(cooldown == 0) {
             double rotation = ship.getRotation();
             Point position = ship.getTransformedPoints()[2];
-            Bullet bullet = new Bullet(position, rotation, 6);
+            Bullet bullet = new Bullet(position, new Velocity(rotation, 6));
             bulletList.add(bullet);
             cooldown = 6;
         }
@@ -185,9 +192,9 @@ class Asteroids extends Game implements KeyListener {
 
     public void explode(Point position) {
         for (int i = 0; i < 10; i++) {
-            Effect effect = new Effect(1, position, i * (36 + Math.random()*5), 50);
+            double direction = i * (36 + Math.random()*5);
+            Effect effect = new Effect(1, position, new Velocity(direction, 1.2), 50);
             effect.color = Color.white;
-            effect.setSpeed(1.2);
             effectsList.add(effect);
         }
     }

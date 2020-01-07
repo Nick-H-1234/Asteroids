@@ -7,12 +7,11 @@ public class Circle extends Shape {
      * Creates a circle centered on position, with radius radius.
      * @param radius the radius of the circle.
      * @param position the centre of the circle.
-     * @param direction the rotation of the circle.
-     * @param speed
+     * @param velocity
      *
      */
-    public Circle(int radius, Point position, double direction, double speed) {
-        super(position, direction, speed);
+    public Circle(int radius, Point position, Velocity velocity) {
+        super(position, velocity);
         this.radius = radius;
     }
 
