@@ -160,8 +160,8 @@ public class ShapeTest {
         Velocity velocity1 = new Velocity(30,1);
         Velocity velocity2 = new Velocity(90,2);
         Velocity velocity3 = new Velocity(70.9,2.65);
-        Velocity result = Velocity.add(velocity1,velocity2);
-        Assert.assertEquals(new Velocity(70.89339464913091,2.6457513110645907), Velocity.add(velocity1,velocity2));
+        Velocity result = velocity1.add(velocity2);
+        Assert.assertEquals(new Velocity(70.89339464913091,2.6457513110645907), result);
     }
 
     @Test
@@ -169,6 +169,6 @@ public class ShapeTest {
         Velocity velocity1 = new Velocity(30,1);
         Velocity velocity2 = new Velocity(210,2);
         Velocity velocity3 = new Velocity(210,1);
-        Assert.assertEquals(velocity3, Velocity.add(velocity1,velocity2));
+        Assert.assertEquals(velocity3, velocity1.add(velocity2));
     }
 }

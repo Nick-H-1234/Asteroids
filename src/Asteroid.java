@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Asteroid extends Polygon {
 
     public static final Point[] ASTEROID_SHAPE_1 = {new Point(20, 0), new Point(40, 0), new Point(60, 20), new Point(40, 40), new Point(20, 40), new Point(0, 20)};
@@ -7,7 +10,16 @@ public class Asteroid extends Polygon {
     public static final Point[] ASTEROID_SHAPE_4 = {new Point(86, 13), new Point(93, 22), new Point(82, 22), new Point(75, 16), new Point(79, 38), new Point(83, 30),new Point(93, 30),new Point(81, 50),new Point(102, 55),new Point(122, 44),new Point(122, 25),new Point(110, 13),};
 
     public Asteroid(Point[] shape, double scale, Point position, Velocity velocity) {
-        super (shape, scale, position, 0, (Math.random() < 0.5 ? 1 : -1)*Math.random(), new Velocity(0,0));
-        this.velocity = velocity;
+        super (shape, scale, position, 0, (Math.random() < 0.5 ? 1 : -1)*Math.random(), velocity);
+    }
+
+    public List<Asteroid> split() {
+        Point point = getPosition();
+        double direction = velocity.getDirection();
+        double speed = velocity.getSpeed();
+        List<Asteroid> newAsteroidsList = new ArrayList<>();
+        newAsteroidsList.add(new Asteroid(getShape(), getScale() - 0.5, point, new Velocity(direction + Math.random() * 30, speed + Math.random() + 0.2)));
+        newAsteroidsList.add(new Asteroid(getShape(), getScale() - 0.5, point, new Velocity(direction - Math.random() * 30, speed + Math.random() + 0.2)));
+        return newAsteroidsList;
     }
 }
