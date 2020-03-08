@@ -11,10 +11,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.awt.Color.white;
+
 class Asteroids extends Game implements KeyListener {
     List<Asteroid> asteroidList = new ArrayList<>();
     List<Bullet> bulletList = new ArrayList<>();
     List<Effect> effectsList = new ArrayList<>();
+    List<Polygon> polygonEffectsList = new ArrayList<>();
     List<Ship> livesList = new ArrayList<>();
     Ship ship;
     boolean gameOver = false;
@@ -24,14 +27,12 @@ class Asteroids extends Game implements KeyListener {
     int level = 1;
     int maxLives = 3;
     int score;
-    int respawnTimer;
-
 
     public Asteroids() {
         super("Asteroids!", 800, 600);
         spawnBox = new Polygon(new Point[]{new Point(0, 0), new Point(width / 3.0, 0), new Point(width / 3.0, height / 3.0), new Point(0, height / 3.0)}, 1, new Point(width / 3.0, height / 3.0), 0, 0, new Velocity(0, 0));
         spawnBox.color = Color.green;
-        invulnerableBox = new Polygon(new Point[]{new Point(0,0), new Point(30, 0), new Point (30, 150), new Point(0, 150)},1, new Point (10,100),0,0,new Velocity(0,0));
+        invulnerableBox = new Polygon(new Point[]{new Point(0, 0), new Point(30, 0), new Point(30, 150), new Point(0, 150)}, 1, new Point(10, 100), 0, 0, new Velocity(0, 0));
         invulnerableBox.color = Color.yellow;
         frame.addKeyListener(this);
         ship = new Ship(new Point(width / 2.0, height / 2.0), 1, new Velocity(0, 0));
@@ -45,7 +46,6 @@ class Asteroids extends Game implements KeyListener {
                         Thread.sleep(10);
                     } catch (Exception exc) {
                     }
-                    ;
                     Asteroids.this.repaint();
                 }
             }
@@ -85,25 +85,49 @@ class Asteroids extends Game implements KeyListener {
         if (!gameOver) {
             brush.fillRect(0, 0, width, height);
 
-            // draw our lives List and the score
+            // Draw our lives List and the score
             for (Ship life : livesList) {
                 life.paint(brush);
             }
             brush.setFont(new Font("Font", Font.PLAIN, 20));
             brush.drawString(String.valueOf(score), width - 80, 40);
+            if(!ship.isAlive() && ship.respawnTimer == 0) {
+                brush.drawString("Press any key to respawn", width/2 - 80, 40);
+            }
 
-            // Handles bullet movements and collisions
+            // Handles asteroid movement and collisions
             List<Asteroid> newAsteroidsList = new ArrayList<>();
-            for (Iterator<Bullet> bulletIterator = bulletList.iterator(); bulletIterator.hasNext(); ) {
-                Bullet bullet = bulletIterator.next();
-                if (!bullet.move(width, height)) {
-                    bulletIterator.remove();
-                    continue;
+            for (Iterator<Asteroid> asteroidIterator = asteroidList.iterator(); asteroidIterator.hasNext(); ) {
+                Asteroid asteroid = asteroidIterator.next();
+                asteroid.move(width, height);
+                asteroid.rotate();
+                asteroid.paint(brush);
+                if (ship.isAlive() && asteroid.collidesWith(ship)) {
+                    if (ship.isInvulnerable()) {
+                        effectsList.addAll(makeExplosionEffects(asteroid.getPosition()));
+                        if (asteroid.scale == 2) {
+                            score += 700;
+                        } else if (asteroid.scale == 1.5) {
+                            score += 300;
+                        } else {
+                            score += 100;
+                        }
+                        asteroidIterator.remove();
+                    } else if (livesList.size() > 1) {
+                        effectsList.addAll(makeExplosionEffects(ship.getPosition()));
+                        livesList.remove(livesList.size() - 1);
+                        polygonEffectsList.addAll(ship.die());
+                        spawnBox.setPosition(new Point(width / 3.0, height / 3.0));
+                    } else {
+                        brush.setColor(Color.red);
+                        brush.drawString("GAME OVER", width / 2, height / 2);
+                        brush.drawString("Press \"R\" to restart", width / 2, height / 2 + 30);
+                        gameOver = true;
+                    }
                 }
-                bullet.paint(brush);
-                newAsteroidsList.clear();
-                for (Iterator<Asteroid> asteroidIterator = asteroidList.iterator(); asteroidIterator.hasNext(); ) {
-                    Asteroid asteroid = asteroidIterator.next();
+
+                for (Iterator<Bullet> bulletIterator = bulletList.iterator(); bulletIterator.hasNext(); ) {
+                    Bullet bullet = bulletIterator.next();
                     if (asteroid.collidesWith(bullet)) {
                         if (asteroid.scale > 1) {
                             newAsteroidsList.addAll(asteroid.split());
@@ -115,76 +139,51 @@ class Asteroids extends Game implements KeyListener {
                         break;
                     }
                 }
-                asteroidList.addAll(newAsteroidsList);
+            }
+            asteroidList.addAll(newAsteroidsList);
+            // Handles bullet movement and removal after going off-screen
+            for (Iterator<Bullet> bulletIterator = bulletList.iterator(); bulletIterator.hasNext(); ) {
+                Bullet bullet = bulletIterator.next();
+                if (!bullet.move(width, height)) {
+                    bulletIterator.remove();
+                }
+                bullet.paint(brush);
             }
 
-            //Asteroid movements
-            for (Asteroid asteroid : asteroidList) {
-                asteroid.move(width, height);
-                asteroid.rotate();
-                asteroid.paint(brush);
-            }
-
-            //Ship movements & respawning
+            // Ship movements & respawning
             ship.shipTick();
-            if (ship.isInvulnerable()) {
-                ship.color = Color.yellow;
-            } else {
-                ship.color = Color.white;
-            }
             if (ship.isAlive()) {
                 ship.move(width, height);
                 ship.rotate();
                 ship.paint(brush);
             } else {
-                if (respawnTimer == 0) {
-                    ship.setAlive(true);
-                    ship.reset(new Point(width / 2.0, height / 2.0));
-                    ship.setInvulnerable(true);
-                    ship.timer = 400;
-                    spawnBox.setPosition(new Point(width / 3.0, height / 3.0));
-                } else {
-                    respawnTimer--;
+                if (ship.respawnTimer == 0) {
+                 polygonEffectsList.clear();
                 }
             }
 
-            // ship - asteroid collisions
-            for (Iterator<Asteroid> asteroidIterator = asteroidList.iterator(); asteroidIterator.hasNext(); ) {
-                Asteroid asteroid = asteroidIterator.next();
-                if (ship.isAlive() && asteroid.collidesWith(ship)) {
-                    if (ship.isInvulnerable()) {
-                        effectsList.addAll(makeExplosionEffects(asteroid.getPosition()));
-                        score += (int) (150 * asteroid.scale);
-                        asteroidIterator.remove();
-                    } else if (livesList.size() > 1) {
-                        effectsList.addAll(makeExplosionEffects(ship.getPosition()));
-                        livesList.remove(livesList.size()-1);
-                        ship.setAlive(false);
-                        respawnTimer = 100;
-                    } else {
-                        brush.setColor(Color.red);
-                        brush.drawString("GAME OVER", width / 2, height / 2);
-                        brush.drawString("Press \"R\" to restart", width/2, height/2 + 30);
-                        gameOver = true;
-                    }
-                }
-            }
-
-            // draw invulnerability meter
+            // Draw invulnerability meter
             if (ship.isInvulnerable()) {
                 invulnerableBox.paint(brush);
                 brush.setColor(Color.yellow);
-                brush.fillRect(10,(int) (100+((400-ship.timer)/2.66666667)),31,(int) (151-(400-ship.timer)/2.66666667));
+                brush.fillRect(10, (int) (100 + ((400 - ship.invulnerableTimer) / 2.66666667)), 31, (int) (151 - (400 - ship.invulnerableTimer) / 2.66666667));
             }
 
-            // level up
+            // Draw dead ship effects
+            for (Polygon polygon: polygonEffectsList) {
+                polygon.move(width, height);
+                brush.setColor(white);
+                brush.drawLine((int) polygon.getTransformedPoints()[0].getX(), (int) polygon.getTransformedPoints()[0].getY(), (int) polygon.getTransformedPoints()[1].getX(), (int) polygon.getTransformedPoints()[1].getY());
+            }
+
+            // Level up
             if (asteroidList.isEmpty()) {
                 level++;
                 generateAsteroidsForLevel(level);
                 score += 300;
             }
 
-            // move & draw effects
+            // Move & draw effects
             for (Iterator<Effect> effectIterator = effectsList.iterator(); effectIterator.hasNext(); ) {
                 Effect effect = effectIterator.next();
                 if (!effect.move(width, height)) {
@@ -200,12 +199,21 @@ class Asteroids extends Game implements KeyListener {
         new Asteroids();
     }
 
+    public boolean spawnBoxIsEmpty() {
+        for (Asteroid asteroid : asteroidList) {
+            if (asteroid.collidesWith(spawnBox)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public List<Effect> makeExplosionEffects(Point position) {
         List<Effect> newEffects = new ArrayList<>(10);
         for (int i = 0; i < 10; i++) {
             double direction = i * (36 + Math.random() * 5);
             Effect effect = new Effect(1, position, new Velocity(direction, 1.2), 50);
-            effect.color = Color.white;
+            effect.color = white;
             newEffects.add(effect);
         }
         return newEffects;
@@ -215,7 +223,7 @@ class Asteroids extends Game implements KeyListener {
         livesList.clear();
         for (int i = 0; i < maxLives; i++) {
             Ship spareShip = new Ship(new Point(10 + (i * 35), 10), 0.7, new Velocity(0, 0));
-            spareShip.color = Color.white;
+            spareShip.color = white;
             livesList.add(spareShip);
         }
     }
@@ -226,13 +234,16 @@ class Asteroids extends Game implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == 37) { //left arrow
-            ship.setRotationSpeed(-2.5);
-        } else if (e.getKeyCode() == 39) { //right arrow
-            ship.setRotationSpeed(2.5);
-        } else if (e.getKeyCode() == 38) { //up arrow
+        if (!ship.isAlive() && spawnBoxIsEmpty()) {
+            ship.respawn(new Point (width/2.0,height/2.0));
+        }
+        else if (e.getKeyCode() == 38 || e.getKeyChar() == 'w') { //up arrow
             ship.engineOn = true;
-        } else if (e.getKeyChar() == 'f' && ship.isAlive()) {
+        } else if (e.getKeyCode() == 37 || e.getKeyChar() == 'a') { //left arrow
+            ship.setRotationSpeed(-2.5);
+        } else if (e.getKeyCode() == 39 || e.getKeyChar() == 'd') { //right arrow
+            ship.setRotationSpeed(2.5);
+        } else if (ship.isAlive() && e.getKeyCode() == KeyEvent.VK_SPACE) {
             bulletList.addAll(ship.shoot());
         } else if (e.getKeyChar() == 'r') {
             gameOver = false;
@@ -243,19 +254,21 @@ class Asteroids extends Game implements KeyListener {
             ship.reset(new Point(width / 2.0, height / 2.0));
             ship.setRotation(-90);
             generateAsteroidsForLevel(level);
+            polygonEffectsList.clear();
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             System.exit(0);
+        } else if (e.getKeyChar() == 'k') {
+            polygonEffectsList.addAll(ship.die());
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == 38) {
+        if (e.getKeyCode() == 38 || e.getKeyChar() == 'w') { // up arrow
             ship.engineOn = false;
-        }
-        if (e.getKeyCode() == 37) { //left arrow
+        } else if (e.getKeyCode() == 37 || e.getKeyChar() == 'a') { // left arrow
             ship.setRotationSpeed(0);
-        } else if (e.getKeyCode() == 39) { //right arrow
+        } else if (e.getKeyCode() == 39 || e.getKeyChar() == 'd') { // right arrow
             ship.setRotationSpeed(0);
         }
     }

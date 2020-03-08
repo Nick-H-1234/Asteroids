@@ -18,8 +18,8 @@ public class Asteroid extends Polygon {
         double direction = velocity.getDirection();
         double speed = velocity.getSpeed();
         List<Asteroid> newAsteroidsList = new ArrayList<>();
-        newAsteroidsList.add(new Asteroid(getShape(), getScale() - 0.5, point, new Velocity(direction + Math.random() * 30, speed + Math.random() + 0.2)));
-        newAsteroidsList.add(new Asteroid(getShape(), getScale() - 0.5, point, new Velocity(direction - Math.random() * 30, speed + Math.random() + 0.2)));
+        newAsteroidsList.add(new Asteroid(getShape(), getScale() - 0.5, point, new Velocity(direction + Math.random() * 30, speed + Math.random()*0.1 + 0.2)));
+        newAsteroidsList.add(new Asteroid(getShape(), getScale() - 0.5, point, new Velocity(direction - Math.random() * 30, speed + Math.random()*0.1 + 0.2)));
         return newAsteroidsList;
     }
 }
