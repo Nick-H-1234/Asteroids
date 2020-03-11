@@ -15,8 +15,12 @@ public class Circle extends Shape {
         this.radius = radius;
     }
 
-    public int getRadius() {
-        return radius;
+    @Override
+    public void paint(Graphics brush) {
+        brush.setColor(color);
+        double x = this.position.getX();
+        double y = this.position.getY();
+        brush.fillOval((int) (x-radius),(int) (y-radius),radius*2,radius*2);
     }
 
     @Override
@@ -52,11 +56,8 @@ public class Circle extends Shape {
         return position;
     }
 
-    @Override
-    public void paint(Graphics brush) {
-        brush.setColor(color);
-        double x = this.position.getX();
-        double y = this.position.getY();
-        brush.fillOval((int) (x-radius),(int) (y-radius),radius*2,radius*2);
+    public int getRadius() {
+        return radius;
     }
+
 }

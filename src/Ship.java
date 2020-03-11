@@ -4,49 +4,30 @@ import java.util.List;
 
 public class Ship extends Polygon {
 
-    public static final Point[] SHIP_SHAPE = {new Point(0, 0), new Point(0, 40), new Point(60, 20)};
+    private static final Point[] SHIP_SHAPE = {new Point(0, 0), new Point(0, 40), new Point(60, 20)};
     private static final double MAX_SPEED = 3;
     private static final double DRAG = 0.006;
     private static final double ACCELERATION = 0.09;
+    public static final int RESPAWN_TIMER = 200;
+    public static final int INVULNERABLE_TIMER = 400;
 
     private boolean invulnerable = false;
     private boolean alive = true;
-    boolean engineOn = false;
-    protected int invulnerableTimer;
-    protected int respawnTimer;
-    int bulletCooldown;
-
+    private boolean engineOn = false;
+    private int invulnerableTimer;
+    private int respawnTimer;
+    private int bulletCooldown;
 
     public Ship(Point position, double scale, Velocity velocity) {
         super(SHIP_SHAPE, scale, position, -90, 0, velocity);
     }
 
     public void reset(Point position) {
-        velocity.setSpeed(0);
         setRotation(-90);
-        this.position = position;
         setAlive(true);
         setInvulnerable(false);
-    }
-
-    public boolean isInvulnerable() {
-        return invulnerable;
-    }
-
-    public void setInvulnerable(boolean invulnerable) {
-        this.invulnerable = invulnerable;
-    }
-
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
-    public void setRotation(double rotation) {
-        this.rotation = rotation;
+        velocity.setSpeed(0);
+        this.position = position;
     }
 
     public boolean move(int width, int height) {
@@ -56,32 +37,27 @@ public class Ship extends Polygon {
             velocity.setSpeed(0);
         }
 
-
         if (engineOn) {
             Velocity newVelocity = new Velocity(getRotation(), ACCELERATION - (velocity.getSpeed() / 100));
             velocity = velocity.add(newVelocity);
+            velocity.setSpeed(Math.min(velocity.getSpeed(), MAX_SPEED));
         }
-
-
-        velocity.setSpeed(Math.min(velocity.getSpeed(), MAX_SPEED));
 
         double x = position.getX() + (velocity.getSpeed() * Math.cos(Math.toRadians(velocity.getDirection())));
         double y = position.getY() + (velocity.getSpeed() * Math.sin(Math.toRadians(velocity.getDirection())));
-
         if (x < 0) {
             x = width;
         }
-        if (x > width) {
+        else if (x > width) {
             x = 0;
         }
 
         if (y < 0) {
             y = height;
         }
-        if (y > height) {
+        else if (y > height) {
             y = 0;
         }
-
         Point newPosition = new Point(x, y);
         setPosition(newPosition);
 
@@ -102,10 +78,11 @@ public class Ship extends Polygon {
 
     public List<Polygon> die() {
         setAlive(false);
-        respawnTimer = 200;
+        respawnTimer = RESPAWN_TIMER;
+
+        // Make three lines that drift apart as ship death effect
         List<Polygon> polygonList = new ArrayList<>(3);
         Point[] shipPoints = getTransformedPoints();
-
         Velocity explosionVelocity = new Velocity(velocity.getDirection(), velocity.getSpeed() / 6).add(new Velocity(getRotation(), 0.2));
         Polygon polygon1 = new Polygon(new Point[]{shipPoints[0], shipPoints[1], new Point(shipPoints[1].getX() + 1, shipPoints[1].getY() + 1)}, 1, new Point(Math.min(shipPoints[0].getX(), shipPoints[1].getX()), Math.min(shipPoints[0].getY(), shipPoints[1].getY())), 0, 0, explosionVelocity);
         Polygon polygon2 = new Polygon(new Point[]{shipPoints[1], shipPoints[2], new Point(shipPoints[2].getX() + 1, shipPoints[2].getY() + 1)}, 1, new Point(Math.min(shipPoints[1].getX(), shipPoints[2].getX()), Math.min(shipPoints[1].getY(), shipPoints[2].getY())), 0, 0, new Velocity(explosionVelocity.getDirection() - 30, explosionVelocity.getSpeed()));
@@ -116,28 +93,25 @@ public class Ship extends Polygon {
         return polygonList;
     }
 
-    public boolean respawn(Point position) {
-        if (respawnTimer == 0) {
+    public void respawn(Point position) {
             setAlive(true);
             reset(position);
             setInvulnerable(true);
-            invulnerableTimer = 400;
-            return true;
-        }
-        return false;
+            invulnerableTimer = INVULNERABLE_TIMER;
     }
 
-
-    public void shipTick() {
+    public void updateTimers() {
         if (isInvulnerable()) {
             color = Color.yellow;
-        } else color = Color.white;
+        } else {
+            color = Color.white;
+        }
 
         if (invulnerableTimer > 0) {
             invulnerableTimer--;
-            if (invulnerableTimer == 0) {
-                setInvulnerable(false);
-            }
+        }
+        else {
+            setInvulnerable(false);
         }
 
         if (bulletCooldown > 0) {
@@ -146,5 +120,33 @@ public class Ship extends Polygon {
         if (respawnTimer > 0) {
             respawnTimer--;
         }
+    }
+
+    public boolean isInvulnerable() {
+        return invulnerable;
+    }
+
+    public void setInvulnerable(boolean invulnerable) {
+        this.invulnerable = invulnerable;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public void setEngineOn(boolean engineOn) {
+        this.engineOn = engineOn;
+    }
+
+    public int getInvulnerableTimer() {
+        return invulnerableTimer;
+    }
+
+    public int getRespawnTimer() {
+        return respawnTimer;
     }
 }

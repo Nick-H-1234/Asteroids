@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 abstract class Game extends Canvas {
-    protected boolean on = true;
     protected int width, height;
     protected Image buffer;
     protected Frame frame;
@@ -34,7 +33,6 @@ abstract class Game extends Canvas {
         buffer = createImage(this.width, this.height);
     }
 
-    // 'paint' will be called every tenth of a second that the game is on.
     abstract public void paint(Graphics brush);
 
     public void update(Graphics brush) {

@@ -86,16 +86,14 @@ public class ShapeTest {
 
     @Test
     public void testTransform0_0_30() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 0, 0, new Velocity(0,0));
-        square.rotation = 30;
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (0,0), 30, 0, new Velocity(0,0));
         Point[] result = square.getTransformedPoints();
         Assert.assertArrayEquals(SQUARE100_POINTS_30, result);
     }
 
     @Test
     public void testTransform40_50_30() {
-        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (40,50), 0, 0, new Velocity(0,0));
-        square.rotation = 30;
+        Polygon square = new Polygon(SQUARE100_POINTS, 1, new Point (40,50), 30, 0, new Velocity(0,0));
         Point[] result = square.getTransformedPoints();
         Assert.assertArrayEquals(SQUARE100_POINTS_40_50_30, result);
     }
@@ -142,14 +140,14 @@ public class ShapeTest {
 
     @Test
     public void testScale2() {
-        Asteroid asteroid = new Asteroid(SQUARE100_POINTS, 2, new Point(0,0), new Velocity(0, 0));
+        Asteroid asteroid = new Asteroid(2, new Point(0,0), new Velocity(0, 0));
         Point[] result = asteroid.getTransformedPoints();
         Assert.assertArrayEquals(SQUARE200_POINTS,result);
     }
 
     @Test
     public void testScale1Point5() {
-        Asteroid asteroid = new Asteroid(SQUARE100_POINTS, 1.5, new Point(0,0), new Velocity(0, 0));
+        Asteroid asteroid = new Asteroid(1.5, new Point(0,0), new Velocity(0, 0));
         Point[] result = asteroid.getTransformedPoints();
         Assert.assertArrayEquals(SQUARE150_POINTS,result);
     }

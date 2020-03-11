@@ -9,7 +9,7 @@ DESCRIPTION: Ah, if only real-life classes were this straight-forward. We'll
  * Represents an immutable point on the x,y plane.
  */
 class Point implements Cloneable {
-    public static final double tolerance = 1E-12;
+    private static final double PRECISION = 1E+12;
     private double x;
     private double y;
 
@@ -32,12 +32,15 @@ class Point implements Cloneable {
             return false;
         }
         Point otherPoint = (Point) other;
-        return Math.abs(otherPoint.getX() - this.getX()) < tolerance && Math.abs(otherPoint.getY() - this.getY()) < tolerance;
+        return Math.round(otherPoint.getX()*PRECISION) == Math.round(this.getX()*PRECISION) && Math.round(otherPoint.getY()*PRECISION) == Math.round(this.getY()*PRECISION);
     }
 
     @Override
     public int hashCode() {
-        return 1;
+        int result = 17;
+        result = 37*result + (int) (Math.round(x*PRECISION));
+        result = 37*result + (int) (Math.round(y*PRECISION));
+        return result;
     }
 
     public String toString() {

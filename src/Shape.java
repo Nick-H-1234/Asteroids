@@ -2,8 +2,8 @@ import java.awt.*;
 import java.beans.VetoableChangeListener;
 
 public abstract class Shape {
-    protected Point position;   // The offset mentioned above.
-    protected Velocity velocity; // Zero degrees is due east (along x axis)
+    protected Point position;
+    protected Velocity velocity;
     protected Color color = Color.white;
 
     public Shape(Point position, Velocity velocity) {
@@ -18,23 +18,14 @@ public abstract class Shape {
         this.position = position;
     }
 
-//    public double getDirection() { return this.direction; }
-//    public void setDirection(double direction) {
-//        this.direction = direction;
-//    }
-
-//    public void setSpeed(double speed) { this.speed = speed; }
-
     public abstract boolean collidesWith(Shape other);
 
     protected double distanceBetween(Point n, Point m) {
         double a = n.getX() - m.getX();
         double b = n.getY() - m.getY();
-        double c = Math.sqrt((Math.pow(a,2))+(Math.pow(b,2)));
-        return c;
+        return Math.sqrt((Math.pow(a,2))+(Math.pow(b,2)));
     }
 
-    // "contains" implements some magical math (i.e. the ray-casting algorithm).
     public abstract boolean contains(Point point);
 
     /**
@@ -70,7 +61,4 @@ public abstract class Shape {
         setPosition(newPosition);
         return true;
     }
-
-
-
 }

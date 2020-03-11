@@ -1,5 +1,5 @@
 public class Velocity {
-    public static final double TOLERANCE = 1E-12;
+    private static final double PRECISION = 1E+12;
     private double direction;
     private double speed;
 
@@ -7,12 +7,6 @@ public class Velocity {
         this.direction = direction;
         this.speed = speed;
     }
-
-    public double getDirection() {return direction;}
-    public void setDirection(double direction) {this.direction = direction;}
-
-    public double getSpeed() {return speed;}
-    public void setSpeed(double speed) {this.speed = speed;}
 
     public Velocity add(Velocity other) {
         double x1 = Math.cos(Math.toRadians(this.getDirection()))*this.getSpeed();
@@ -42,17 +36,26 @@ public class Velocity {
             return false;
         }
         Velocity otherVelocity = (Velocity) other;
-        return Math.abs(otherVelocity.getDirection() - this.getDirection()) < TOLERANCE && Math.abs(otherVelocity.getSpeed() - otherVelocity.getSpeed()) < TOLERANCE;
+        return Math.round(otherVelocity.getDirection()*PRECISION) == Math.round(this.getDirection()*PRECISION)  && Math.round(otherVelocity.getSpeed()*PRECISION) == Math.round(this.getSpeed()*PRECISION);
     }
 
     @Override
     public int hashCode() {
-        return 1;
+    int result = 17;
+    result = 37*result + (int) (Math.round(direction*PRECISION));
+    result = 37*result + (int) (Math.round(speed*PRECISION));
+    return result;
     }
 
     @Override
     public String toString() {
         return "Direction: " + direction + ", Speed: " + speed;
     }
+
+    public double getDirection() {return direction;}
+    public void setDirection(double direction) {this.direction = direction;}
+
+    public double getSpeed() {return speed;}
+    public void setSpeed(double speed) {this.speed = speed;}
 
 }

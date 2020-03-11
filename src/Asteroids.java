@@ -52,33 +52,8 @@ class Asteroids extends Game implements KeyListener {
         }).start();
     }
 
-    private void generateAsteroidsForLevel(int level) {
-        Point spawnBoxPosition = new Point(ship.position.getX() - (width / 6.0), ship.getPosition().getY() - (height / 6.0));
-        spawnBox.setPosition(spawnBoxPosition);
-        asteroidList.clear();
-        int asteroidsNumber = (level * 2) + 2;
-        for (int i = 0; i < asteroidsNumber; i++) {
-            Asteroid asteroid = new Asteroid(generateShape(), 2, generateLocation(), new Velocity(generateRotation(), 0.9));
-            if (asteroid.collidesWith(spawnBox)) {
-                i--;
-            } else {
-                asteroidList.add(asteroid);
-            }
-        }
-    }
-
-    public Point[] generateShape() {
-        return Math.random() < 0.5 ? Asteroid.ASTEROID_SHAPE_3 : Asteroid.ASTEROID_SHAPE_4;
-    }
-
-    public Point generateLocation() {
-        double x = Math.random() * width;
-        double y = Math.random() * height;
-        return new Point(x, y);
-    }
-
-    public double generateRotation() {
-        return Math.random() * 360;
+    public static void main(String[] args) {
+        new Asteroids();
     }
 
     public void paint(Graphics brush) {
@@ -91,7 +66,7 @@ class Asteroids extends Game implements KeyListener {
             }
             brush.setFont(new Font("Font", Font.PLAIN, 20));
             brush.drawString(String.valueOf(score), width - 80, 40);
-            if(!ship.isAlive() && ship.respawnTimer == 0) {
+            if(!ship.isAlive() && ship.getRespawnTimer() == 0) {
                 brush.drawString("Press any key to respawn", width/2 - 80, 40);
             }
 
@@ -105,9 +80,9 @@ class Asteroids extends Game implements KeyListener {
                 if (ship.isAlive() && asteroid.collidesWith(ship)) {
                     if (ship.isInvulnerable()) {
                         effectsList.addAll(makeExplosionEffects(asteroid.getPosition()));
-                        if (asteroid.scale == 2) {
+                        if (asteroid.getScale() == 2) {
                             score += 700;
-                        } else if (asteroid.scale == 1.5) {
+                        } else if (asteroid.getScale() == 1.5) {
                             score += 300;
                         } else {
                             score += 100;
@@ -126,10 +101,11 @@ class Asteroids extends Game implements KeyListener {
                     }
                 }
 
+                // Handles bullet-asteroid collisions
                 for (Iterator<Bullet> bulletIterator = bulletList.iterator(); bulletIterator.hasNext(); ) {
                     Bullet bullet = bulletIterator.next();
                     if (asteroid.collidesWith(bullet)) {
-                        if (asteroid.scale > 1) {
+                        if (asteroid.getScale() > 1) {
                             newAsteroidsList.addAll(asteroid.split());
                         }
                         effectsList.addAll(makeExplosionEffects(asteroid.getPosition()));
@@ -141,6 +117,7 @@ class Asteroids extends Game implements KeyListener {
                 }
             }
             asteroidList.addAll(newAsteroidsList);
+
             // Handles bullet movement and removal after going off-screen
             for (Iterator<Bullet> bulletIterator = bulletList.iterator(); bulletIterator.hasNext(); ) {
                 Bullet bullet = bulletIterator.next();
@@ -151,13 +128,13 @@ class Asteroids extends Game implements KeyListener {
             }
 
             // Ship movements & respawning
-            ship.shipTick();
+            ship.updateTimers();
             if (ship.isAlive()) {
                 ship.move(width, height);
                 ship.rotate();
                 ship.paint(brush);
             } else {
-                if (ship.respawnTimer == 0) {
+                if (ship.getRespawnTimer() == 0) {
                  polygonEffectsList.clear();
                 }
             }
@@ -166,7 +143,7 @@ class Asteroids extends Game implements KeyListener {
             if (ship.isInvulnerable()) {
                 invulnerableBox.paint(brush);
                 brush.setColor(Color.yellow);
-                brush.fillRect(10, (int) (100 + ((400 - ship.invulnerableTimer) / 2.66666667)), 31, (int) (151 - (400 - ship.invulnerableTimer) / 2.66666667));
+                brush.fillRect(10, (int) (100 + ((400 - ship.getInvulnerableTimer()) / 2.66666667)), 31, (int) (151 - (400 - ship.getInvulnerableTimer()) / 2.66666667));
             }
 
             // Draw dead ship effects
@@ -195,8 +172,23 @@ class Asteroids extends Game implements KeyListener {
         }
     }
 
-    public static void main(String[] args) {
-        new Asteroids();
+    public Point generateLocation() {
+        return new Point(Math.random() * width, Math.random() * height);
+    }
+
+    private void generateAsteroidsForLevel(int level) {
+        Point spawnBoxPosition = new Point(ship.position.getX() - (width / 6.0), ship.getPosition().getY() - (height / 6.0));
+        spawnBox.setPosition(spawnBoxPosition);
+        asteroidList.clear();
+        int asteroidsNumber = (level * 2) + 2;
+        for (int i = 0; i < asteroidsNumber; i++) {
+            Asteroid asteroid = new Asteroid(2, generateLocation(), new Velocity(Math.random() * 360, 0.9));
+            if (asteroid.collidesWith(spawnBox)) {
+                i--;
+            } else {
+                asteroidList.add(asteroid);
+            }
+        }
     }
 
     public boolean spawnBoxIsEmpty() {
@@ -234,11 +226,11 @@ class Asteroids extends Game implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (!ship.isAlive() && spawnBoxIsEmpty()) {
+        if (!ship.isAlive() && ship.getRespawnTimer() == 0 && spawnBoxIsEmpty()) {
             ship.respawn(new Point (width/2.0,height/2.0));
         }
         else if (e.getKeyCode() == 38 || e.getKeyChar() == 'w') { //up arrow
-            ship.engineOn = true;
+            ship.setEngineOn(true);
         } else if (e.getKeyCode() == 37 || e.getKeyChar() == 'a') { //left arrow
             ship.setRotationSpeed(-2.5);
         } else if (e.getKeyCode() == 39 || e.getKeyChar() == 'd') { //right arrow
@@ -265,7 +257,7 @@ class Asteroids extends Game implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == 38 || e.getKeyChar() == 'w') { // up arrow
-            ship.engineOn = false;
+            ship.setEngineOn(false);
         } else if (e.getKeyCode() == 37 || e.getKeyChar() == 'a') { // left arrow
             ship.setRotationSpeed(0);
         } else if (e.getKeyCode() == 39 || e.getKeyChar() == 'd') { // right arrow
