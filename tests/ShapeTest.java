@@ -98,6 +98,19 @@ public class ShapeTest {
         Assert.assertArrayEquals(SQUARE100_POINTS_40_50_30, result);
     }
 
+    @Test
+    public void testScale2() {
+        Polygon polygon = new Polygon(SQUARE100_POINTS, 2, new Point(0,0), 0, 0, new Velocity(0,0));
+        Point[] result = polygon.getTransformedPoints();
+        Assert.assertArrayEquals(SQUARE200_POINTS,result);
+    }
+
+    @Test
+    public void testScale1Point5() {
+        Polygon polygon = new Polygon(SQUARE100_POINTS, 1.5, new Point(0,0), 0, 0, new Velocity(0,0));
+        Point[] result = polygon.getTransformedPoints();
+        Assert.assertArrayEquals(SQUARE150_POINTS,result);
+    }
 
     //Test Polygon vs Circle collisions
     @Test
@@ -136,37 +149,5 @@ public class ShapeTest {
         Assert.assertEquals(new Point(15,20), polygon.makePointOnCircle(new Point(10,20), 0, 5));
         Assert.assertEquals(new Point(10,25), polygon.makePointOnCircle(new Point(10,20), 90, 5));
         Assert.assertEquals(new Point (10+(-5 / sqrt(2)), 20+(-5 / sqrt(2))), polygon.makePointOnCircle(new Point(10,20), 225, 5));
-    }
-
-    @Test
-    public void testScale2() {
-        Asteroid asteroid = new Asteroid(2, new Point(0,0), new Velocity(0, 0));
-        Point[] result = asteroid.getTransformedPoints();
-        Assert.assertArrayEquals(SQUARE200_POINTS,result);
-    }
-
-    @Test
-    public void testScale1Point5() {
-        Asteroid asteroid = new Asteroid(1.5, new Point(0,0), new Velocity(0, 0));
-        Point[] result = asteroid.getTransformedPoints();
-        Assert.assertArrayEquals(SQUARE150_POINTS,result);
-    }
-
-
-    @Test
-    public void testVectorAddition() {
-        Velocity velocity1 = new Velocity(30,1);
-        Velocity velocity2 = new Velocity(90,2);
-        Velocity velocity3 = new Velocity(70.9,2.65);
-        Velocity result = velocity1.add(velocity2);
-        Assert.assertEquals(new Velocity(70.89339464913091,2.6457513110645907), result);
-    }
-
-    @Test
-    public void testVector2() {
-        Velocity velocity1 = new Velocity(30,1);
-        Velocity velocity2 = new Velocity(210,2);
-        Velocity velocity3 = new Velocity(210,1);
-        Assert.assertEquals(velocity3, velocity1.add(velocity2));
     }
 }

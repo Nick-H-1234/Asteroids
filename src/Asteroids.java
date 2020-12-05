@@ -47,6 +47,13 @@ class Asteroids extends Game implements KeyListener {
                     } catch (Exception exc) {
                     }
                     Asteroids.this.repaint();
+                    frame.addFocusListener(new FocusListener(){
+                        public void focusGained(FocusEvent e){
+                        }
+                        public void focusLost(FocusEvent e){
+                            e.getComponent().requestFocus();
+                        }
+                    });
                 }
             }
         }).start();
@@ -226,7 +233,8 @@ class Asteroids extends Game implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (!ship.isAlive() && ship.getRespawnTimer() == 0 && spawnBoxIsEmpty()) {
+        // if (!ship.isAlive() && ship.getRespawnTimer() == 0 && spawnBoxIsEmpty()) {
+        if (!ship.isAlive() && ship.getRespawnTimer() == 0){
             ship.respawn(new Point (width/2.0,height/2.0));
         }
         else if (e.getKeyCode() == 38 || e.getKeyChar() == 'w') { //up arrow
@@ -249,9 +257,10 @@ class Asteroids extends Game implements KeyListener {
             polygonEffectsList.clear();
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             System.exit(0);
-        } else if (e.getKeyChar() == 'k') {
-            polygonEffectsList.addAll(ship.die());
         }
+//        else if (e.getKeyChar() == 'k') {
+//            polygonEffectsList.addAll(ship.die());
+//        }
     }
 
     @Override
